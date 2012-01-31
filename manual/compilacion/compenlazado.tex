@@ -1,0 +1,110 @@
+% seccion Compilación enlazada
+\section{Compilación}
+
+La compilación es la fase más costosa del proceso de compilación y esto es
+debido a que el compilador debe analizar el texto de nuestro programa fuente,
+comprobar que no contiene errores  y producir como salida un fichero con la traducción de nuestro
+código a conjunto de instrucciones de nuestro procesador.\\
+
+
+Ningún proyecto de programación serio está compuesto hoy en día por un solo archivo fuente, sino 
+más bien todo lo contrario. Es conveniente que cualquier programa que pase de unos cientos de
+líneas sea dividido en una serie de módulos que faciliten la legibilidad y el mantenimiento del
+código.\\
+
+A la hora de compilar nuestro proyecto lo que haremos será \textit{procesar} cada uno
+de estos módulos por separado, diciéndole al compilador que tenga en cuenta que ninguno
+de estos módulos es un programa por si mismo, sino una parte del mismo. Lo que hará el compilador
+será producir como salida una serie de \textbf{ficheros objeto}\footnote{La extensión habitual
+de estos ficheros es \texttt{.o} (Unix/Linux) o \texttt{.obj} (Windows)}. Estos ficheros son la traducción
+a binario de cada uno de nuestros módulos. Sin embargo ninguno de ellos conforma un ejecutable
+por sí mismo, ya que ninguno contiene el código completo de nuestro programa.
+
+%
+% SECCIÓN: ENLAZADO
+%
+\section{Enlazado}
+
+\label{enlazado}
+
+La fase de enlazado consiste simplemente en ``reunir'' cada uno de los ficheros objeto
+producidos en la fase anterior, resultando de este proceso un fichero ejecutable. Si nuestro
+programa hace uso de librerías externas (la mayoría lo hacen), el código de las funciones
+utilizadas será añadido también al fichero ejecutable\footnote{Realmente esta forma de enlazado
+con librerías es solo una modalidad de las dos existentes, llamada enlazado estático. Si en vez
+de añadir el código de la función de librería utilizada se deja una referencia a esta 
+(el equivalente a decir ``Esta función no está aquí, la puedes encontrar en la librería X''),
+estamos hablando de enlazado \textit{dinámico}.}.
+
+
+%
+% SECCIÓN: UN EJEMPLO SENCILLO
+%
+\section{Un ejemplo sencillo}
+
+A continuación vamos a ver de qué nos sirven todos estos conceptos con un ejemplo
+sencillo. 
+
+\nota{Como entorno de programación vamos a utilizar el compilador GCC en un PC normal con Linux, aunque todo lo que veamos será fácilmente extrapolable a cualquier otro entorno.}
+
+\begin{flushleft}
+Queremos compilar el siguiente programa, que está compuesto de dos módulos:
+
+\vspace{0.3cm}
+\fbox{\texttt{principal.c}}
+\end{flushleft}
+\begin{listing}{1}
+#include <stdio.h>
+
+/* Prototipo */
+int obten_numero( void );
+
+/* Código */
+int main(void) {
+        int n;
+
+        n = obten_numero();
+
+        printf( "Has introducido el %d\n", n );
+}
+\end{listing}
+
+\begin{flushleft}
+\fbox{\texttt{entrada\_teclado.c}}
+\end{flushleft}
+\begin{listing}{1}
+#include <stdio.h>
+
+int obten_numero(void) {
+        int n;
+
+        printf( "Introduce un número: " );
+        scanf( "%d", &n );
+
+        return n;
+}
+\end{listing}
+
+\begin{flushleft}
+Lo primero que vamos a hacer es compilar los dos módulos, por separado:
+\end{flushleft}
+
+\begin{verbatim}
+$ gcc -c principal.c
+$ gcc -c entrada_teclado.c
+$
+\end{verbatim}
+
+\nota{ El flag \texttt{-c} le dice al compilador que \textbf{no queremos} enlazar el código proporcionado, sólo
+preprocesarlo y compilarlo.}
+
+\begin{flushleft}
+Una vez compilados los módulos sólo nos queda enlazarlos:
+\end{flushleft}
+
+\begin{verbatim}
+$ gcc -o programa.exe principal.o entrada_teclado.o
+\end{verbatim}
+
+De esta forma hemos generado un fichero ejecutable (\verb+programa.exe+ en este caso) a partir
+de los dos módulos.

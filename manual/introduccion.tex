@@ -1,0 +1,84 @@
+%
+% CAPÍTULO: INTRODUCCIÓN
+%
+\newpage
+\ \
+\newpage
+\chapter{Introducción}
+\section{Un poco de historia...}
+
+El lenguaje de programación C fue ideado e implementado por Dennis
+Ritchie en 1972 en un DEC PDP-11\footnote{Un ordenador ``prehistórico", enorme, con cintas, 
+similar a los que salen en las películas} usando UNIX como sistema operativo. Inicialmente, 
+el estándar de C fue realmente la versión proporcionada por la 
+implementación de la versión V del sistema operativo UNIX. Su rápida
+expansión lleva a la aparición de varias variantes y problemas de
+compatibilidad, por lo que en verano del 1983 se estableció un comité
+para crear el estándar \textsc{ANSI}\footnote{Instituto Nacional de Estándares
+Americano (American National Standards Institute)} para C. En 1989 se adoptó finalmente el estándar y poco después
+aparecieron los primeros compiladores conformes a este estándar. En 1995 se adoptó la 1ª enmienda
+con algunos cambios de la biblioteca de funciones, y fue la base para
+desarrollar C++. Finalmente, en 1999 se adoptó el estándar C99 con
+algunas mejoras e ideas prestadas de C++. Actualmente cohexisten las
+dos versiones, mientras los programas migran a C99.
+
+\section{Características}
+
+\begin{itemize}
+\item C es un lenguaje estructurado de nivel medio, ni de bajo
+  nivel como ensamblador, ni de alto nivel como Ada o 
+  Haskell. Esto permite una mayor flexibilidad y potencia, a cambio de
+  menor abstracción.
+
+\item No se trata de un lenguaje fuertemente tipado, lo que significa
+  que se permite casi cualquier conversión de tipos. No es necesario que
+  los tipos sean exactamente iguales para poder hacer conversiones,
+  basta con que sean parecidos.
+
+\item No lleva a cabo comprobación de errores en tiempo de ejecución,
+  por ejemplo no se comprueba que no se sobrepasen los límites de los
+  \textit{arrays}\footnote{Agrupación de elementos de un mismo tipo de forma consecutiva  en memoria .
+  Volveremos
+  sobre los \textit{arrays} más tarde}. El programador es el único responsable de llevar a cabo esas
+  comprobaciones.
+
+\item Tiene un reducido numero de palabras clave, unas 32 en C89 y 37
+  en C99. 
+ 
+\item C dispone de una \emph{biblioteca estándar}
+  que contiene numerosas funciones y que siempre está disponible, además de las extensiones que proporcione cada compilador o entorno
+  de desarrollo.
+\end{itemize} 
+
+En resumen, es un lenguaje muy flexible, muy potente, muy popular,
+pero que no protege al programador de sus errores.
+
+\section{C frente a C++}
+
+%Al principio es habitual no entender bien la diferencia entre C y C++,
+%este último es un lenguaje para la programación orientada a objetos
+%que toma como base el lenguaje C. Se puede ver al C++ como una
+%extensión de C para programación orientada a objetos. \\
+
+%En general, se puede utilizar un compilador de C++ para compilar un
+%programa escrito en C, de hecho la mayoría de los compiladores son
+%para C/C++ indistintamente.
+
+%----------------------------
+
+No podemos hablar de C sin mencionar a C++, dado que es habitual no tener muy claro cuales 
+son sus diferencias. En pocas palabras, C++ es un lenguaje para programación orientada a objetos 
+que toma como base el lenguaje C. La programación orientada a objetos es otra filosofía 
+de programación distinta a la de C (programación estructurada)\footnote{ La programación orientada a
+objetos queda fuera del ámbito de este texto, para mas información se puede consultar cualquier libro de C++ } 
+aunque con C++ es posible (aunque no especialmente recomendable) mezclar ambos estilos de programación. 
+En términos generales, podemos ver a C++ como una extensión de C. Sin embargo, como se definió 
+a partir del estándar de C de 1989, y han evolucionado por separado, 
+hay pequeñas divergencias entre ellos.\\
+
+Por lo general, se puede utilizar un compilador de C++ para compilar un 
+programa escrito en C, inversamente la gran mayoría de los programas 
+escritos en C son válidos en C++. De hecho actualmente la mayoría de los 
+compiladores admiten tanto código en C como en C++. 
+
+

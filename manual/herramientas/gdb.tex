@@ -1,0 +1,32 @@
+\section{Depuradores: \texttt{gdb} y \texttt{ddd}}
+\label{gdb}
+
+\definicion{Depurador}{Herramienta que permite al programador seguir la
+ejecución de su programa paso a paso, así como ver el contenido de variables.}
+
+\subsection{Depurando con \texttt{gdb}}
+
+Para poder ejecutar un depurador sobre nuestros programas en C,
+debemos especificar a gcc que incluya información de depuración en los
+binarios que genere. Como se vio en \ref{opciones_gcc}, en el caso de utilizar
+gcc compilamos el programa 
+con el modificador \texttt{-g}. 
+
+\subsection{Depurador gráfico: \texttt{ddd}}
+
+DDD es un interfaz gráfico para el depurador gdb. La principal ventaja
+de ddd es la facilidad para mostrar los contenidos de las posiciones
+de memoria durante la ejecución de nuestro programa, como puede verse
+en la siguiente captura:
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=18cm]{herramientas/ddd.eps}
+\caption{DDD en accion, cadenas enlazadas}
+\end{centering}
+\end{figure}
+
+\subsection{Manejo}
+
+Para obtener una descripción del manejo de gdb y ddd, os remitimos a
+la documentación de un seminario previo de ACM: \cite{Adan}.

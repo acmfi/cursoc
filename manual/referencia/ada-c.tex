@@ -1,0 +1,242 @@
+% seccion Construcciones equivalentes ADA-C
+\section{Construcciones equivalentes ADA-C}
+
+\subsection{Introducción}
+
+En esta sección se pretende poner de manifiesto las diferencias y similitudes 
+entre los lenguajes Ada y C. Estas diferencias están motivadas por la orientación 
+radicalmente diferente de estos lenguajes. Ada un lenguaje es orientado a objetos 
+y fue diseñado para sistemas empotrados y críticos, donde es muy importante la corrección del código (vidas humanas pueden depender de ello). Es por ello que es muy "verboso", es decir, 
+las instrucciones son muy largas y pesadas\footnote{Una de las ideas en su desarrolo fue la de que el código se escribe una vez, pero se lee muchas}. 
+El lenguaje C sin embargo fue diseñado inicialmente para programar sistemas operativos, es decir, 
+programación cerca de la máquina
+(aunque dada su enorme flexibilidad se use para todo tipo de tareas), 
+por lo que su sintaxis es muy escueta y expresiva.
+
+\subsection{Sintaxis Ada vs. Sintaxis C}
+
+Al llegar a este punto, todo lo aquí expuesto resultará conocido, pero
+no está de mas recapitular un poco. 
+%Si habeis seguido el curso de C con atención, todo lo que veáis en
+%esta sección ya os resultará conocido. En caso de que tengáis alguna
+%duda, remitiros a los apartados de sintaxis de C que tenéis en la
+%documentación.\\
+Para seguir un orden comenzaremos con la declaración de variables,
+tipos y las cabeceras ``headers'' que se incluyen en los programas. Luego
+se verán las sentencias de selección (\texttt{if}) y de
+iteración (\texttt{for y while}). Finalmente se abordará uno de los
+temas más candentes de C pero no tanto en Ada, los punteros. Finalizando con funciones y procedimientos.
+
+\subsubsection{Tipos, Variables y Headers}
+
+Como hemos visto, en C existen casi los mismos tipos básicos que en Ada. Decimos
+casi, porque hay que excluir el tipo boolean que en C no está
+predefinido\footnote{Aunque siempre se puede emular
+mediante una directiva \texttt{define}}. Para ``arreglarlo'' C toma el valor 0 como True y los
+demás como False. Por otra parte Ada incluye muchos tipos avanzados o de propósito específico 
+(números complejos, duraciones, numeros en coma fija\ldots).
+No olvidemos que Ada es un lenguaje enorme, con muchisimos identificadores, mientras que C es todo lo contrario.\\
+
+\begin{flushleft}
+Otra diferencia está en la forma en que se identifican los tipos. Así pues
+tenemos:\\
+\end{flushleft}
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Tipo en Ada} & \textbf{Tipo en C}\\
+\hline
+Integer & int\\
+\hline
+Character & char\\
+\hline
+Natural & ---\\
+\hline
+Positive & ---\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+A la hora de declarar variables, en C se indica primero de qué
+tipo es (\verb+int+, \verb+char+, \verb+float+\ldots) y luego se escribe el nombre de la
+variable. En cambio en Ada primero se indica el nombre de
+la variable, seguido de un espacio, dos puntos y por último el tipo:\\
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Variable en Ada} & \textbf{Variable en C}\\
+\hline
+\verb+numero : Integer;+ & \verb+int numero;+\\
+\hline
+\verb+letra : Character;+ & \verb+char letra;+\\
+\hline
+\end{tabular} 
+\vspace{0.4cm}
+
+Para las tuplas, ternas,\ldots  en Ada se usa la palabra reservada
+\verb-record- mientras que en C se denominan estructuras y se
+definen con la palabra reservada \verb-struct-. Tomemos por ejemplo
+la definición de un punto (en dos dimensiones) en los dos lenguajes:\\
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Punto en Ada} & \textbf{Punto en C}\\
+\hline
+\verb+type Tipo_Punto is record+ & \verb+struct Tipo_Punto+\\
+\ \ \ \verb+x : Integer;+ & \verb+{+\\
+\ \ \ \verb+y : Integer;+ & \ \ \ \verb+int x, y;+\\
+\verb+end record;+ & \verb+}+\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+En cuanto a los arrays en Ada primero se indica el nombre y luego se
+dice que es un array \textbf{is array}, después se indica la longitud
+y finalmente se indica el tipo de datos que conforman el array. En C
+es más corto, se indica el tipo de datos, luego el nombre y por
+último la longitud:\\
+
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Array en Ada} & \textbf{Array en C}\\
+\hline
+\verb+Nombre is array (desde..hasta) of Tipo_Dato;+ & \verb+tipo_dato nombre [longitud];+\\  
+\hline
+\verb+Whatever is array (1..25) of Integer;+ & \verb+int whatever[25];+\\ 
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+Hay que tener en cuenta que en C el primer elemento del array es el que ocupa la posición 0
+ (array[0]) y para Ada en este caso es el elemento 
+que ocupa la posición 1 (array(1)), hay que notar que a diferencia de C, 
+Ada no obliga a que los arrays empiecen en 0, pueden empezar en cualquier entero, 
+incluso negativo (se pueden incluso declarar con el rango de otra variable).\\
+
+Para incluir las cabeceras:\\
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Headers en Ada} & \textbf{Headers en C}\\
+\hline
+\verb+with fichero; use fichero;+ & \verb+#include "fichero"+\\  
+\hline
+\verb+with Ada.Text_IO; use Ada.Text_IO;+ & \verb+#include <stdio.h>+\\ 
+\hline
+\end{tabular}
+
+\subsubsection{Sentencias de selección y de iteración}
+
+\begin{flushleft}
+\textbf{Sentencia if}\\
+\end{flushleft}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{if en Ada} & \textbf{if en C}\\
+\hline
+if condicion then & if (condicion)\\ 
+\ \ ejecutar\_uno; & \{\\
+else & \ \ ejecutar\_uno; \\
+\ \ ejecutar\_dos; & \}\\
+end if; & else \\
+\ & \{\\
+\ & \ \ ejecutar\_dos;\\
+\ & \}\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+En C es necesario que la condición vaya siempre entre paréntesis y no
+se usa \verb-then- ni \verb-end if- sino llaves \textbf{\{ \}}.\\
+
+\begin{flushleft}
+\textbf{Bucle while}\\
+\end{flushleft}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{while en Ada} & \textbf{while en C}\\
+\hline
+while condicion loop & while (condicion) \\
+\ \ ejecutar\_sentencias; & \{\\
+end loop; & \ \ ejecutar\_sentencias;\\ 
+\ & \}\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+Al igual que en el \textbf{if}, en C los paréntesis en la condición
+son necesarios. \\
+
+\begin{flushleft}
+\textbf{Bucle for}
+\end{flushleft}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{for en Ada} & \textbf{for en C}\\
+\hline
+\verb+for I in 1 .. n loop+ & \verb-for (i=0; i<n; i++)- \\
+\ \ ejecutar\_sentencias; & \{\\
+\verb+end loop;+ & \ \ ejecutar\_sentencias;\\ 
+\ & \}\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+La principal diferencia, es que el iterador i en C tiene que estar
+definido con anterioridad. Por otra parte, en C para hacer que el índice decremente
+habría que poner \verb+i--+ y en Ada añadiríamos la palabra \verb-reverse-. 
+
+\subsubsection{Punteros}
+
+Los punteros son muy importantes en C, y son la base de su increíble flexibilidad
+(y también de gran parte de los quebraderos de cabeza a la hora de depurar). En Ada
+se les da un uso mucho menos marcado. Por ejemplo, en C se usan para el paso 
+de parámetros por refencia en la invocación de funciones mientras que en Ada se usa la 
+palabra reservada \verb-inout-. 
+Los punteros se definen con el término \verb-access- y en C usando ``*''. 
+Para acceder a la información apuntada en C hay que desreferenciar el puntero
+y en Ada acceder a \texttt{nombrepuntero.all}.\\
+
+En Ada los punteros no apuntan a un tipo básico tal como \verb-character- o \verb-integer-, 
+sino a un \verb-record-, formado por (contenido, siguiente\_elemento). 
+Aquí radica otra de las diferencias entre ambos lenguajes:\\
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Ada} & \textbf{C}\\
+\hline
+\verb+nombre.all.campo+ & \verb+nombre->campo+ \\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+Algo importante que tiene C y que no tiene equivalente en Ada es la aritmética de punteros.
+
+\subsubsection{Funciones}
+
+En C sólo hay funciones, no hay procedimientos propiamente dichos, Lo
+más parecido son las funciones que no devuelven nada (\texttt{void}). La
+diferencia es que los datos no se pueden pasar como \verb-in-,  \verb-out- o \verb-inout-,
+sino como variables normales (que ``mueren'' al final de la ejecución
+de la función). Si no queremos que esto ocurra, los parámetros se han
+de pasar por referencia (usando punteros)\footnote{En C++ se puede hacer de manera algo más comoda.}.\\
+
+\begin{flushleft}
+
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Función en Ada} & \textbf{Función en C}\\
+\hline
+\verb+Function nombre (parametros) RETURN tipo_devuelto IS+ &\verb+tipo_devuelto nombre(parametros)+ \\
+\ \ \ ... & \{ \\
+\verb+end nombre;+ & \ \ \ ...\\
+\ & \}\\
+\hline
+\end{tabular}
+\vspace{0.8cm}
+\\
+De nuevo, se ve el uso de \textbf{\{ \}} frente a \verb-end-.
+\end{flushleft}

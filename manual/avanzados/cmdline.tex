@@ -1,0 +1,106 @@
+%
+% SECCIÓN: LÍNEA DE COMANDOS
+%
+\section{Línea de comandos}
+
+% Subseccion Introducción
+\subsection{Introducción}
+
+Seguramente habrás tenido que ejecutar alguna vez un programa de consola que requiera
+\emph{argumentos en la línea de comandos}, como por ejemplo \verb+ls -l /+ (linux) o 
+\verb+dir /p+ (DOS/Windows). \\
+
+Los argumentos de la línea de comandos no son más que información adicional que se le pasa al
+programa a la hora de ejecutarse. En los ejemplos anteriores esta información adicional
+serían las cadenas \verb+-l+ y \verb+/p+. En esta sección vamos a ver cómo acceder a esta 
+información desde nuestros programas en C.
+
+
+% Subseccion El prototipo de la función main
+\subsection{El prototipo de la función \texttt{main}}
+
+Hasta ahora el prototipo de la función \verb+main+ que hemos utilizado es el siguiente:
+\begin{verbatim}
+int main( void );
+\end{verbatim}
+
+Es decir, nuestra rutina \verb+main+ no admitía ningún parámetro, lo cual parece lógico, ya 
+que no somos nosotros quienes llamamos a esta rutina (lo hace el sistema operativo cuando
+ejecutamos el programa). Sin embargo existe otro posible prototipo para esta función:
+
+\begin{verbatim}
+int main( int argc, char **argv );
+\end{verbatim}
+
+Como habrás observado hemos cambiado los argumentos que recibe la función (y por tanto el programa). Estos
+dos nuevos parámetros no son más que información acerca de la línea de comandos con la que se ha ejecutado
+el programa. Más concretamente:
+
+\begin{itemize}
+        
+        \item{\verb+int argc+: Este parámetro contiene el número de argumentos con los que el programa
+        ha sido llamado. El propio programa se considera también un argumento el primero, como veremos
+        más adelante.}
+
+        \item{\verb+char **argv+: Array de punteros a punteros de cadenas de caracteres. Esto quiere
+        decir que \verb+argv[0]+ será un puntero a una cadena de caracteres que conformará el primer
+        argumento del programa.}
+\end{itemize}
+
+
+\begin{flushleft}
+Antes de seguir profundizando en el tema veamos algunos ejemplos:
+\end{flushleft}
+
+
+
+\begin{verbatim}
+ls -l --color /
+\end{verbatim}
+
+
+\vspace{0.3cm}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Índice de \texttt{argv}} & \textbf{Contenido de \texttt{argv}} \\
+\hline
+0 & \verb+ls+ \\
+\hline
+1 & \verb+-l+ \\
+\hline
+2 & \verb+--color+\\
+\hline
+3 & \verb+/+\\
+\hline
+\end{tabular}
+\vspace{0.4cm}
+
+
+Cuando hablábamos del parámetro \verb+argc+ decíamos que contenía el número de argumentos
+que se pasan a \verb+main+. Hemos de tener en cuenta que todo programa C recibe al menos un
+argumento, y este es el nombre del ejecutable que contiene al programa, como se puede comprobar
+fácilmente mediante el siguiente programa:
+
+\ejemplo{avanzados/ejemplo_argv0.c}
+
+\begin{flushleft}
+Si ejecutamos el programa sin argumentos obtenemos la siguiente salida:
+\end{flushleft}
+
+\begin{verbatim}
+argc vale: 1
+argv[0] es: ejemplo_argv0.exe
+\end{verbatim}
+
+
+Por lo tanto al manejar los argumentos de la línea tienes que tener en cuenta que 
+\verb+argc+ siempre será \textbf{mayor o igual que uno}, y \verb+argv[0]+ contendrá siempre
+la ruta al fichero ejecutable que contiene tu programa.\\
+
+Veamos por último un ejemplo de un programa que actúa de forma diferente según los argumentos
+de línea de comandos que le pasemos:
+
+\ejemplo{avanzados/ejemplo_cmdline.c}
+\begin{flushleft}
+¿Serías capaz de saber como se comporta este programa sin ejecutarlo previamente?
+\end{flushleft}

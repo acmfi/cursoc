@@ -1,0 +1,115 @@
+%% SECCIÓN: SINTAXIS DE PUNTEROS
+
+\section{Sintáxis de punteros}
+
+\subsection{Declaración de punteros}
+
+Ante todo, \emph{un puntero es una variable}. Al dedicar un interés
+especial en los punteros, puede dar la impresión de que son elementos
+separados de las variables. No es así. Son variables, y como veremos,
+podemos asignarles nuevos valores, e incluso realizar algunas
+operaciones aritméticas útiles con ellos.\\
+
+\emph{Una variable de tipo puntero está íntimamente ligada con el tipo
+  al que apunta}. Por ello, en la declaración, escribimos el nombre
+  del tipo al que apuntará nuestro puntero, seguido de asterisco, y por
+  último, el nombre del puntero. Ejemplo:
+
+\begin{verbatim}
+int *p_entero;
+float *p_real;
+char *caracter;
+\end{verbatim}
+
+Serán declaraciones de punteros que contendrán la dirección de memoria
+de un entero, un real y un carácter\footnote{Como veremos, la
+  declaración char * es usada también para la declaración de
+  cadenas de caracteres} respectivamente.
+
+\subsection{Punteros genéricos}
+
+Un caso especial, es cuando queremos declarar un puntero ``genérico'',
+esto es, queremos que el puntero no esté ligado a ningun tipo
+concreto. ¿Qué sentido tiene esto?, como se ha visto previamente, en C
+podemos realizar un \textit{cast} (ver \ref{cast}) sobre una variable,
+y forzar su conversión a otro tipo. De esta manera, por ejemplo,
+podríamos declarar un puntero genérico, apuntar a una zona de memoria,
+y realizar un cast sobre el puntero genérico.
+\nota{La única diferencia existente entre un puntero
+genérico, y un puntero ligado a un tipo de datos concreto, se produce
+en las operaciones de aritmética de punteros (ver
+\ref{punteros_aritmetica}).} 
+
+Para declarar un puntero de tipo genérico, utilizamos:
+
+\begin{verbatim}
+void * pointer;
+\end{verbatim}
+
+Como veremos, muchas funciones de biblioteca de POSIX manejan punteros
+genéricos en sus argumentos.
+
+\subsection{Los operadores de contenido ``\texttt{*}'' y de indirección
+  ``\texttt{\&}''} 
+
+\label{operadores_punteros}
+
+El operador de indirección \texttt{\&} se utiliza para referirse a la
+dirección de una variable, así el código siguiente:
+
+\begin{verbatim}
+/* Reservamos 4 bytes para almacenar una dirección de memoria */
+int *p_entero;
+
+/* Reservamos 4 bytes para almacenar un entero */
+int entero;
+
+/* Escribimos en la variable p_entero la dirección de entero */
+p_entero = &entero;
+\end{verbatim}
+
+Es totalmente correcto ya que, aunque la variable \texttt{entero} no
+tenga ningún valor asignado todavía, lo que estamos haciendo es
+escribir en la variable \texttt{p\_entero} la dirección de memoria
+donde se almacena la variable \texttt{entero}.\\
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=80mm]{punteros/images/init_punteros.eps}
+\caption{Inicializando punteros}
+\end{centering}
+\end{figure}
+
+El operador \texttt{*} se utilizar para manejar la dirección a la que
+apunta un puntero. Podríamos llamarlo el operador de
+\textit{acceso}. Tanto el operador de acceso, como el de indirección,
+funcionan en \textbf{notación prefija}. Veamos un ejemplo que combina
+ambos operadores:
+
+\begin{verbatim}
+1 int *p_entero;
+2 int entero1, entero2;
+3 entero1 = 2;
+4 entero2 = 5;
+5 p_entero = &entero1;
+6 entero1 = *p_entero + entero2;
+\end{verbatim}
+
+Del mismo modo podemos asignar un valor a la variable a la que apunta
+el puntero, de la forma:
+
+\begin{verbatim}
+1 int *p_entero;
+2 int entero1, entero2;
+3 entero1 = 2;
+4 entero2 = 5;
+5 p_entero = &entero1;
+6 *p_entero = entero1 + entero2;
+\end{verbatim}
+
+Este último código ejecutaría \textbf{exactamente} lo mismo que el
+anterior. Debemos notar que no tendría sentido prescindir de la linea
+5, puesto que estaríamos intentando introducir el valor
+\texttt{entero1 + entero2} en una dirección de memoria que no
+conocemos, puesto que no le habriamos dado valor a \texttt{p\_entero}
+(ver \ref{punteros_roma}).

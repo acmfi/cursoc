@@ -1,0 +1,67 @@
+\section{Control Concurrente de Versiones: \texttt{cvs}}
+
+CVS significa \textit{Concurrent Version System}. Es una herramienta
+que nos permite mantener nuestro trabajo en un \textbf{repositorio},
+al que múltiples usuarios pueden conectarse y realizar cambios. En
+nuestra opinión, es una de las mejores ayudas para el trabajo en
+equipo, e incluso, para el trabajo individual (control de cambios en
+las versiones). 
+
+\subsection{Escenario de uso}
+
+El usuario crea un repositorio en una máquina, que almacenará el
+proyecto en el que se va a trabajar. Cada vez que se crea un archivo
+nuevo en el proyecto, o un subdirectorio, se introduce en el repositorio
+con un número de versión inicial. Una vez creado el repositorio, cada usuario puede conectarse con el
+servidor y descargarse una copia del mismo a su máquina, trabajar con
+los ficheros, y enviar los cambios al servidor. \\
+
+Donde se nota realmente la potencia del sistema es cuando los
+usuarios trabajan sobre los mismos ficheros. Mientras los cambios sean
+en zonas diferentes de un mismo fichero, CVS se encarga de mezclar las
+versiones sin interacción del usuario. El único escenario que requiere
+intervención del usuario es el siguiente:
+
+\begin{itemize}
+\item el usuario A se descarga la versión 1.3 del fichero X
+\item el usuario B se descarga la versión 1.3 del fichero X
+\item el usuario A modifica el fichero X y lo sube, generando la
+  versión 1.4
+\item el usuario B modifica el fichero X en el mismo sitio y lo sube,
+  produciendo un conflicto con los cambios del usuario A
+\end{itemize}
+
+En este caso, CVS avisa al usuario B de que tiene que reconciliar a
+mano ambas versiones, y le proporciona las diferencias entre sus
+modificaciones y las de su compañero. Una vez que el usuario B corrige
+a mano esos cambios, sube el fichero, generando la version 1.5.\\
+
+CVS proporciona otras muchas ventajas, como poder generar ramas a
+partir de un punto del proyecto, permitiendo que los usuarios trabajen
+en ramas distintas, y muy importante, permite recuperar cualquier
+versión de cualquier archivo existente. Podemos, por ejemplo,
+recuperar un archivo tal y como estaba hace un mes.\\
+
+A continuación se muestra un ejemplo de operación sobre un
+repositorio:
+
+\begin{verbatim}
+Borrado gdb.tex, ya no era necesario
+Cambios en las tildes de cvs.
+CVS: ----------------------------------------------------------------------
+CVS: Enter Log.  Lines beginning with `CVS:' are removed automatically
+CVS: 
+CVS: Committing in .
+CVS: 
+CVS: Modified Files:
+CVS:    cvs.tex 
+CVS: Removed Files:
+CVS:    gdb.tex 
+CVS: ----------------------------------------------------------------------
+\end{verbatim}
+
+
+\subsection{Manejo}
+
+Os remitimos a la estupenda documentación realizada por un compañero
+de ACM en \cite{Hernando}.

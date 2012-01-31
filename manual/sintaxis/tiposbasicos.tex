@@ -1,0 +1,222 @@
+% seccion Tipos básicos
+\section{Tipos básicos}
+
+
+Como ya sabrás, el tipo de una variable determina el dominio de valores que 
+dicha variable debe tomar. En este capítulo veremos los tipos básicos que ofrece C al programador. 
+Más adelante (sección \ref{sect:compuestos}) veremos como construir, a partir de este pequeño
+conjunto, tipos de datos más complicados.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Tipos de datos}
+
+\begin{flushleft}
+C ofrece una colección de tipos de datos bastante limitada, aunque no por ello poco funcional. Dicha
+colección se compone de los siguientes tipos:
+\end{flushleft}
+ 
+\begin{itemize}
+        \item{\verb+char:+
+        \begin{itemize}
+                \item{\textbf{Contenido:} Puede contener un caracter del conjunto de caracteres locales}
+                \item{\textbf{Tamaño:} Normalmente\footnote{Con la introducción del juego de 
+                                caracteres \textit{Unicode} esto está empezando a cambiar. \textit{Unicode} permite
+                                representar un amplio juego de caracteres, que incluye varios alfabetos (occidental,
+                                cirílico, etc..). El precio que se debe pagar a cambio de esta deseable funcionalidad
+                                es el que los caracteres \textit{unicode} ocupen 2 bytes} 1 byte.}
+        \end{itemize}
+        }
+
+        \item{\verb+int:+
+        \begin{itemize}
+                \item{\textbf{Contenido:} Un número entero}
+                \item{\textbf{Tamaño:} El determinado por la arquitectura para números enteros. En 
+                                arquitecturas Intel/x86 es 4 bytes}
+        \end{itemize}
+        }
+
+        \item{\verb+float:+
+        \begin{itemize}
+                \item{\textbf{Contenido:} Un número en coma flotante }
+                \item{\textbf{Tamaño:} El determinado por la arquitectura para números en coma flotante. En
+                                arquitecturas Intel/x86 es 4 bytes }
+        \end{itemize}
+        }
+  
+        \item{\verb+double+
+        \begin{itemize}
+                \item{\textbf{Contenido:} Un número en coma flotante de precisión doble}
+                                \item{\textbf{Tamaño:} El determinado por la arquitectura para números en coma flotante de doble precisión. En
+                                arquitecturas Intel/x86 es 8 bytes }
+
+        \end{itemize}
+        }
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+\subsection{Calificadores}
+
+\definicion{Calificador}{Es un atributo que indica al compilador una característica de la variable declarada. }
+
+\subsubsection{\texttt{short} y \texttt{long}} 
+
+Normalmente el rango de representación ofrecido por un tipo es suficientemente grande para nuestras
+necesidades. Sin embargo en C es posible \textit{sugerir} al compilador que utilice más memoria a la
+hora de almacenar la variable de ese tipo. Esto se hace con el calificador \verb+long+
+
+\begin{verbatim}
+long int numero_entero_grande;
+long double numero_real_grande;
+\end{verbatim}
+
+\nota{El estándar que regula la implementación de compiladores de C \textbf{no especifica} cuanto más 
+grande tiene que ser una variable calificada como \texttt{long} que otra que no lo está. Lo único que especifica
+es que el rango de una variable \texttt{long} \textbf{no puede ser menor} que el rango de una no calificada. Es por tanto
+posible que una variable \texttt{long int} y una variable \texttt{int} tengan el mismo tamaño.} 
+
+El calificador \verb+short+ actúa de forma contraria a \verb+long+. Si por ejemplo disponemos de una variable
+que sabemos que no va a usar todo el rango ofrecido por el tipo \verb+int+ podemos calificarla como 
+\verb+short int+ ahorrando (posiblemente) memoria.
+
+
+\nota{Los calificadores \texttt{short} y \texttt{long} normalmente
+  sólo están disponibles para el tipo \texttt{int}. Algunos
+  compiladores también  permiten usar el calificador \texttt{long} con
+  el tipo \texttt{double}} 
+
+ 
+\subsubsection{\texttt{signed} y \texttt{unsigned}}
+
+Estos calificadores se usan en los tipos \verb+char+ e \verb+int+ para
+indicar al compilador que la variable declarada tomará valores
+negativos y positivos (\verb+signed+) o sólo positivos o cero
+(\verb+unsigned+).
+
+\nota{A no ser que se indique lo contrario las variables de tipo
+\texttt{int} y \texttt{char} se califican automáticamente con
+\texttt{signed}}
+
+\subsubsection{\texttt{static}(\texttt{local})}
+
+Si declaramos una variable local con el modificador static,
+conseguiremos que nuestra variable sea accesible solamente desde esa
+función y que conserve su valor a través de sucesivas llamadas.
+
+\ejemplo{sintaxis/ejemplo_modificadores_2.c}
+
+La salida mostrada por pantalla sería:
+
+\begin{verbatim}
+        Cuenta: 1
+        Cuenta: 2
+        Cuenta: 3
+        Cuenta: 4
+        Cuenta: 5
+\end{verbatim}
+
+\subsubsection{\texttt{static}(\texttt{global})}
+Las variables globales son por defecto accesibles desde cualquier
+fuente del programa, si declaramos una variable global con el
+modificador static impediremos que estas variables sean visibles desde
+otro fuente. De igual modo, las funciones definidas en un fuente son
+utilizables desde cualquier otro. Si queremos impedir que una función
+sea llamada desde fuera del fuente en la que está definida usaremos el
+modificador static.
+
+\subsubsection{\texttt{register}}
+Con este modificador indicamos al compilador que la variable debe ser
+almacenada en un registro de la CPU (no en memoria).
+
+\nota{Este modificador es únicamente aplicable a variables
+locales. Además hay que tener en cuenta que no podríamos obtener su
+dirección, ya que está almacenada en un registro y no en memoria.}
+
+\begin{verbatim}
+register int i;
+\end{verbatim}
+
+\subsubsection{\texttt{volatile}}
+Este modificador se usa con variables que puedan ser modificadas desde
+el exterior del programa por procesos externos. Obliga al compilador a
+leer de memoria el valor de la variable siempre que vaya a ser usada
+aunque ya tenga dicho valor en algún registro de una lectura
+anterior. Se usa con variables en las que no se sabe con certeza
+cuándo se va a modificar su contenido.
+
+\begin{verbatim}
+volatile int i;
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Variables}
+\definicion{Variable}{Espacio de memoria, referenciado por un identificador, en el
+que el programador puede almacenar datos de un determinado tipo}
+
+Declarar una variable es indicar al compilador que debe reservar espacio
+para almacenar valores de un tipo determinado, que serán referenciados por un 
+identificador determinado. En C debemos declarar \textbf{todas} las
+variables antes de usarlas, establecer el tipo que tienen y, en los
+casos que sea necesario, darles un valor inicial. 
+
+\subsubsection{Sintaxis de declaración de variables}
+
+La declaración de una variable es una sentencia simple con la siguiente sintáxis:
+\begin{verbatim}
+tipoVariable nombreVariable;
+\end{verbatim}
+
+De esta forma declaramos que la variable \verb+nombreVariable+ es de tipo \verb+tipoVariable+. El siguiente
+ejemplo declara una variable de tipo \verb+int+ (entero):
+
+\begin{verbatim}
+int contador;
+\end{verbatim}
+
+También es posible dar un valor inicial a la variable declarada:
+\begin{verbatim}
+int contador = 2;
+\end{verbatim}
+
+Como habrás adivinado esta sentencia declara la variable \verb+contador+ y le da un valor inicial
+de \verb+3+. 
+
+A veces en necesario declarar varias variables de un mismo tipo. Existe una forma abreviada
+de declaración de variables que permite hacer esto en una sola sentencia:
+
+\begin{verbatim}
+int x,y,z;
+\end{verbatim}
+
+El anterior ejemplo declara tres variables  (\verb+x+, \verb+y+, \verb+z+), todas de tipo
+entero (\verb+int+). Usando esta forma abreviada también es posible dar un valor inicial
+a las variables:
+
+\begin{verbatim}
+int x=0,y=1,z=23;
+\end{verbatim}
+\subsubsection{Declaraciones y nombres}
+
+A la hora de declarar una variable debemos tener en cuenta diversas
+restricciones :
+
+\begin{itemize}
+        \item{Los nombres de variables se componen de letras, dígitos y el caracter de subrayado \verb+_+.}
+        \item{El primer caracter del nombre debe ser una letra o el carácter de subrayado.}
+        \item{Las letras mayúsculas y minúsculas son distintas en C.}
+        \item{Las palabras reservadas del lenguaje no se pueden usar como nombres de variable.}
+\end{itemize}
+
+\consejo{Elige nombres de variable que sean significativos y estén relacionados
+con el propósito de la misma.}
+
+
+

@@ -1,0 +1,441 @@
+%
+% CAPÍTULO: LA LIBRERÍA ESTÁNDAR DE C
+%
+\chapter{La librería estándar de C}
+\label{chapter:libstd}
+\section {Introducción}
+
+El estándar de C define sólo unas pocas palabras reservadas. Sólo con
+ellas no puede hacerse un programa ``normal'' en la vida real. El
+programador necesita una serie de funciones y herramientas
+\textbf{estándar}, que deben estar disponibles en cualquier entorno de
+programación de C / C++. A este conjunto de funciones se le llama
+\textbf{librería estándar}. Las funciones se declaran en ficheros de
+cabecera o \textbf{.h}. Las cabeceras contienen única y
+exclusivamente los prototipos de las funciones. El código o cuerpo de
+las funciones se incluye en \textbf{ficheros objeto} que son realmente
+la librería.
+
+\section {Principales ficheros de cabecera}
+Los principales ficheros de cabecera de C ``suelen ser'' los siguientes:
+
+\begin{itemize}
+\item
+\verb+ctype.h+: Funciones útiles para la clasificación y el mapeado de códigos.
+\item
+\verb+errno.h+: Funciones que permiten comprobar el valor almacenado en \texttt{errno} por algunas funciones de librerías.
+\item
+\verb+float.h+: Funciones que establecen algunas propiedades de las representaciones de tipos real.
+\item
+\verb+limits.h+: Funciones que establecen algunas propiedades de las representaciones de tipos enteros.
+\item
+\verb+math.h+: Funciones que sirven para realizar operaciones matemáticas comunes sobre valores de tipo \texttt{double}.
+\item
+\verb+stdarg.h+: Son declaraciones que permiten acceder a los argumentos adicionales sin nombre en una función que acepta un número variable de argumentos.
+\item
+\verb+stdio.h+: Macros y funciones para realizar operaciones de entrada y salida sobre ficheros y flujos de datos.
+\item
+\verb+stdlib.h+ y a veces \verb+unistd.h+: Declaraciones de una colección de funciones útiles y la definición de tipos y macros para usarlas. Entre ellas suele estar la función \textbf{malloc} que permite hacer peticiones de memoria dinámica al sistema. 
+\item
+\verb+string.h+: Declaración de una colección de funciones útiles para manejar cadenas y otros arrays de caracteres.
+\item
+\verb+time.h+: Declaración de funciones para el manejo de fechas. 
+\end{itemize}
+
+\section{stdio.h}
+
+\subsection {Funciones para el manejo de la Entrada/Salida}
+
+\subsubsection{printf}
+
+\verb+int printf (const char *formato, ...);+
+\begin{flushleft}
+Escribe texto formateado por el flujo \texttt{stdout}, según las especificaciones de ``formato'' y la lista de expresiones. Devuelve el número de caracteres escritos o un valor negativo en caso de error.
+\end{flushleft}
+
+\subsubsection{scanf}
+
+\verb+int scanf (const char  *formato, ...);+
+\begin{flushleft}
+Lee texto por el flujo \texttt{stdin} y lo almacena según las especificaciones de ``formato''. Devuelve el número de valores asignados o \texttt{EOF} si se produce error o se alcanza fin de fichero sin producirse lectura.
+\end{flushleft}
+%
+%\subsubsection{gets}
+%
+%\verb+char *gets(char *s);+
+%\begin{flushleft}
+%Lee caracteres por el flujo estándar de entrada ``stdin'' y los almacena en el ``array'' que comienza en ``s'' hasta que se almacena un carácter ``NL'' o se active el indicador de error o el fin de fichero. Si almacena algún elemento, termina almacenando un carácter nulo. Devuelve ``s'' si almacena algún carácter. Sustituye el carácter ``NL'' por '$\backslash$0'.
+%\end{flushleft}
+%
+\subsubsection{puts}
+
+\verb+int puts (const char *s);+
+\begin{flushleft}
+Escribe los caracteres de la cadena ``s'' por el flujo \texttt{stdout}. Escribe un carácter ``NL'' en lugar del nulo de terminación. Devuelve un valor no negativo. En caso de error devuelve \texttt{EOF}.
+\end{flushleft} 
+
+\subsection {Funciones para el manejo de ficheros}
+
+\subsubsection{fopen}
+\label{subsection:fopen}
+
+\verb+FILE *fopen(const char *nombre_fichero, const char *modo);+ 
+\begin{flushleft}
+Abre el fichero de nombre ``nombre\_fichero'', lo asocia con un flujo de datos y devuelve un puntero al mismo. Si falla la llamada, devuelve un puntero nulo.
+Algunos de los caracteres iniciales de ``modo'' son:
+\begin {description}
+\item[] ``r'', para abrir un fichero de texto existente para su lectura
+\item[] ``w'', para crear un fichero de texto o abrir y truncar uno existente, para su escritura
+\item[] ``a'', para crear un fichero de texto o abrir uno existente, para su escritura. El indicador de posición se coloca al final del fichero antes de cada escritura
+\item[] ``r+'', para abrir un fichero de texto existente para su lectura y escritura
+\end {description} 
+\end{flushleft}
+
+\ejemplo{libstd/ejemplo_abre_fichero.c}
+
+\subsubsection{fclose}
+
+\verb+int fclose(FILE *flujo);+
+\begin{flushleft}
+Cierra el fichero asociado con ``flujo''. Devuelve 0 en caso de éxito y \texttt{EOF} (end of file) en caso contrario.
+\end{flushleft}
+
+\ejemplo{libstd/ejemplo_cierra_fichero.c}
+
+
+\subsubsection{fwrite}
+
+\verb+size_t fwrite(const void *buffer, size_t n, size_t c, FILE *flujo);+
+\begin{flushleft}
+La rutina \verb+fwrite+ permite escribir c elementos de longitud n bytes almacenados en el buffer apuntado por ``flujo''.
+\end{flushleft}
+
+
+\ejemplo{libstd/ejemplo_fwrite.c}
+
+\subsubsection{fread}
+
+\verb+size_t fread(const void *buffer, size_t n, size_t c, FILE *flujo);+
+
+\begin{flushleft}
+La rutina \verb+fread+ permite leer c elementos de longitud n bytes del fichero apuntado por ``flujo'' y los almacena en el buffer especificado.
+\end{flushleft}
+
+\ejemplo{libstd/ejemplo_fread.c}
+
+\subsubsection{fgetc}
+
+\verb+int fgetc(FILE *flujo);+
+\begin{flushleft}
+Lee el siguiente carácter por ``flujo'', avanza el indicador de posición y devuelve \texttt{int}. Devuelve \texttt{EOF} si pone a 1 el indicador de fin de fichero o el de error.
+\end{flushleft}
+
+\subsubsection{fgets}
+
+\verb+char *fgets(char *s, int n, FILE *flujo);+
+\begin{flushleft}
+Lee caracteres por ``flujo'' y los almacena en elementos sucesivos del ``array'' que comienza en ``s'', continuando hasta que almacene ``n-1'' caracteres, almacene un carácter del nueva línea o ponga a 1 los indicadores de error o de fin de fichero. Si almacena un carácter, concluye almacenando un carácter nulo en el siguiente elemento del ``array''. Devuelve ``s'' si almacena algún carácter y no ha puesto a 1 el indicador de error; en caso contrario devuelve un puntero nulo.
+\end{flushleft}
+
+\subsubsection{fputc}
+
+\verb+int fputc(int c, FILE *flujo);+
+\begin{flushleft}
+Escribe el carácter \texttt{c} por ``flujo'', avanza el indicador de posición del fichero y devuelve \texttt{int c} . En caso de error devuelve \texttt{EOF}.
+\end{flushleft}
+
+\subsubsection{fputs}
+
+\verb+int fputs(const char *s, FILE *flujo);+
+\begin{flushleft}
+Escribe los caracteres de la cadena \texttt{s} por ``flujo''. No escribe el carácter nulo de terminación. En caso de éxito, devuelve un valor no negativo; en caso de error devuelve \texttt{EOF}.
+\end{flushleft}
+
+\subsubsection{fscanf}
+
+\verb+int fscanf(FILE *flujo, const char *formato, ...);+
+\begin{flushleft}
+Lee texto y convierte a la representación interna según el formato especificado en \texttt{formato}. Devuelve el número de entradas emparejadas y asignadas, o \texttt{EOF} si no se almacenan valores antes de que se active el indicador de error o de fin de fichero.
+\end{flushleft}
+
+\subsubsection{fprintf}
+
+\verb+int fprintf(FILE *flujo, const char *formato, ...);+
+\begin{flushleft}
+Genera texto formateado, bajo el control de formato \texttt{formato} y escribe los caracteres generados por \texttt{flujo}. Devuelve el número de caracteres generados o un valor negativo en caso de error.
+
+\end{flushleft}
+
+\begin{flushleft}
+A modo de resumen estas son las especificaciones de formato más comunes:
+\end{flushleft}
+
+\begin{tabular}{|c|l|}
+\hline
+\textbf{Formato} & \textbf{Descripción}\\
+\hline
+ \%d & Entero con signo\\
+\hline
+\%u & Entero sin signo\\
+\hline
+\%c & Caracter\\
+\hline
+\%s & Puntero a cadena de caracteres\\
+\hline
+\end{tabular}
+
+\ejemplo{libstd/ejemplo_fprintf.c}
+
+
+\subsubsection{fseek}
+\verb+int fseek( FILE *flujo, long desplazamiento, int origen);+\\
+
+La  función fseek mueve el puntero de posición del fichero correspondiente al flujo de datos apuntado por ``flujo''.  La nueva posición, medida en bytes, se obtiene añadiendo el número indicado por desplazamiento a la posición especificada por origen. La variable origen puede tomar tres valores:
+
+\begin{itemize}
+        \item{\verb+SEEK_SET+: El puntero de posición apuntará al inicio del fichero más el desplazamiento}
+        \item{\verb+SEEK_CUR+: El puntero de posición apuntará a la posición actual del puntero de posición del fichero más el desplazamiento.}
+        \item{\verb+SEEK_END+: El puntero de posición apuntará al fin del fichero más el desplazamiento (deberá ser menor o igual que cero).}
+        
+\end{itemize}
+
+\nota{Al abrir un fichero el puntero de posición apunta al principio del mismo.
+      Toda lectura o escritura hecha en el fichero modifica el puntero de posición.}
+
+\ejemplo{libstd/ejemplo_fseek.c}
+
+\section{stdlib.h}
+
+\subsection{Funciones para la conversión de tipos}
+\subsubsection{abs}
+
+\verb+int abs(int i);+
+\begin{flushleft}
+Devuelve el valor absoluto de \texttt{i}.
+\end{flushleft}
+
+\subsubsection{atof}
+
+\verb+double atof(const char *s);+
+\begin{flushleft}
+Convierte los caracteres de la cadena \texttt{s} a la representación interna de tipo \texttt{double} y devuelve ese valor.
+\end{flushleft}
+
+\subsubsection{atoi}
+
+\verb+int atoi(const char *s);+
+\begin{flushleft}
+Convierte los caracteres de la cadena \texttt{s} a la representación interna de tipo \texttt{int} y devuelve ese valor.
+\end{flushleft}
+
+\subsubsection{atol}
+
+\verb+long atol(const char *s);+
+\begin{flushleft}
+Convierte los caracteres de la cadena \texttt{s} a la representación interna de tipo \texttt{long} y devuelve ese valor.
+\end{flushleft}
+
+\subsubsection{strtod}
+
+\verb+double strtod(const char *s, char **finptr);+
+\begin{flushleft}
+Convierte los caracteres iniciales de la cadena \texttt{s} en la correspondiente representación interna de tipo \texttt{double} y devuelve ese valor.
+Si \texttt{finptr} no es un puntero nulo, la función almacena en él un puntero al resto de la cadena que no se ha convertido.
+\end{flushleft}
+
+\subsubsection{strtol}
+
+\verb+long strtol(const char *s, char **finptr);+
+\begin{flushleft}
+Convierte los caracteres iniciales de la cadena \texttt{s} en la correspondiente representación interna de tipo \texttt{long} y devuelve ese valor.
+Si \texttt{finptr} no es un puntero nulo, la función almacena en él un puntero al resto de la cadena que no se ha convertido.
+\end{flushleft}
+
+\subsection{Funciones para el manejo de memoria}
+\subsubsection{malloc}
+
+\verb+void *malloc(size_t longitud);+
+\begin{flushleft}
+Asigna una dirección de memoria para un objeto de datos de tamaño \texttt{longitud} y devuelve esa dirección.
+\end{flushleft}
+
+\subsubsection{calloc}
+
+\verb+void *calloc(size_t nelem, size_t longitud);+
+\begin{flushleft}
+Asigna una localización en memoria a un objeto de datos \textit{array} que contiene \textit{nelem} elementos de tamaño \texttt{longitud}, asignando ceros a todos los bytes del \textit{array} y devuelve la dirección del primer elemento en caso de éxito; en caso contrario, devuelve un puntero nulo.
+\end{flushleft}
+
+\subsubsection{realloc}
+
+\verb+void *realloc(void *p, size_t longitud);+
+\begin{flushleft}
+Cambia el tamaño de la memoria apuntada por \texttt{p} al que se indica con \texttt{longitud}. Asigna una dirección de memoria para un objeto de datos de tamaño \texttt{longitud}, copiando los valores almacenados en \texttt{p}. Devuelve la nueva dirección de memoria asignada.
+\end{flushleft}
+
+\subsubsection{free}
+
+\verb+void free(void *p);+
+\begin{flushleft}
+Si \texttt{p} no es un puntero nulo, la función libera la memoria asignada al objeto de datos cuya dirección es \texttt{p}, en caso contrario, no hace nada. Se puede liberar la memoria asignada con \texttt{calloc}, \texttt{malloc}, \texttt{realloc}.
+\end{flushleft}
+
+\section{string.h}
+
+\subsubsection{strcmp}
+\label{strcmp}
+\verb+int strcmp(const char *s1, const char *s2);+
+\begin{flushleft}
+Compara los elementos de dos cadenas \texttt{s1} y \texttt{s2} hasta que encuentra elementos diferentes. Si todos son iguales, devuelve 0. Si el elemento diferente de \texttt{s1} es mayor que el de \texttt{s2}, devuelve un valor mayor que cero; en caso contrario, devuelve un valor menor que cero.
+\end{flushleft}
+
+\subsubsection{strcpy}
+
+\verb+char *strcpy(char *s1, const char *s2);+
+\begin{flushleft}
+Copia la cadena \texttt{s2}, incluyendo el nulo, en el \textit{array} de elementos \texttt{char} que comienza en \texttt{s1}. Devuelve \texttt{s1}.
+\end{flushleft}
+
+\subsubsection{strdup}
+
+\verb+char *strdup(const char *s);+
+\begin{flushleft}
+Devuelve un puntero a una nueva cadena de caracteres que es un duplicado de la cadena \texttt{s}. La memoria para esta cadena de caracteres se obtiene con la función malloc y se libera con la función free.
+\end{flushleft}
+
+\subsubsection{strlen}
+
+\verb+size_t strlen (const char *s);+
+\begin{flushleft}
+Devuelve el número de caracteres de la cadena \texttt{s}, sin incluir el nulo de terminación.
+\end{flushleft}
+
+\subsubsection{strncmp}
+
+\verb+int strncmp(const char *s1, const char *s2, size\_t n);+
+\begin{flushleft}
+Compara los elementos de las cadenas \texttt{s1} y \texttt{s2} hasta que encuentra alguno diferente o hasta que se han comparado \texttt{n} elementos. Si todos los elementos son inguales, devuelve 0. Si el elemento diferente de \texttt{s1} es mayor que el de \texttt{s2}, devuelve un número positivo. En caso contrario, devuelve un número negativo.
+\end{flushleft}
+
+\subsubsection{strncpy}
+
+\verb+char *strncpy(char *s1, const char *s2, size\_t n);+
+\begin{flushleft}
+Copia la cadena \texttt{s2}, sin incluir el nulo, en la cadena \texttt{s1}. Copia no más de \texttt{n} caracteres de \texttt{s2}. Entonces almacena, cero o más caracteres nulos si son necesarios para completar un total de \texttt{n} caracteres. Devuelve \texttt{s1}.
+\end{flushleft}
+
+\subsubsection{strndup}
+
+\verb+char *strndup(const char *s, size\_t n);+
+\begin{flushleft}
+Devuelve un puntero a una nueva cadena de caracteres que es un duplicado de la cadena \texttt{s}, solo copia los primeros \texttt{n} caracteres, incluyendo el nulo. La memoria para esta cadena de caracteres se obtiene con la función malloc y se libera con la función free.
+\end{flushleft}
+
+\section{math.h}
+
+\subsubsection{ceil}
+
+\verb+double ceil(double x);+
+\begin{flushleft}
+Valor entero más pequeño no menor que \texttt{x}.
+\end{flushleft}
+
+\subsubsection{cos}
+
+\verb+double cos(double x);+
+\begin{flushleft}
+Coseno de \texttt{x} en radianes.
+\end{flushleft}
+
+\subsubsection{exp}
+
+\verb+double exp(double x);+
+\begin{flushleft}
+Exponencial de \texttt{x}, \(e^x\).
+\end{flushleft}
+
+\subsubsection{fabs}
+
+\verb+double fabs(double x);+
+\begin{flushleft}
+Valor absoluto de \texttt{x}, \(\vert x \vert\).
+\end{flushleft}
+
+\subsubsection{floor}
+
+\verb+double floor(double x);+
+\begin{flushleft}
+Mayor valor entero menor que \texttt{x}.
+\end{flushleft}
+
+\subsubsection{log}
+
+\verb+double log(double x);+
+\begin{flushleft}
+Devuelve el logaritmo natural de \texttt{x}.
+\end{flushleft}
+
+\subsubsection{log10}
+
+\verb+double log10(double x);+
+\begin{flushleft}
+Devuelve el logaritmo en base 10 de \texttt{x}.
+\end{flushleft}
+
+\subsubsection{pow}
+
+\verb+double pow(double x, double y);+
+\begin{flushleft}
+Devuelve \texttt{x} elevado a la potencia \texttt{y}, \(x^y\).
+\end{flushleft}
+
+\subsubsection{sin}  
+
+\verb+double sin(double x);+
+\begin{flushleft}
+Devuelve el seno de \texttt{x} (en radianes).
+\end{flushleft}
+
+\subsubsection{sqrt}
+
+\verb+double sqrt(double x);+
+\begin{flushleft}
+Devuelve la raíz cuadrada de \texttt{x}.
+\end{flushleft}
+
+\subsubsection{tan}
+
+\verb+double tan(double x);+
+\begin{flushleft}
+Devuelve la tangente de \texttt{x} (en radianes). 
+\end{flushleft}
+
+\section{ctype.h}
+
+\subsubsection{islower}
+
+\verb+int islower (int c);+
+\begin{flushleft}
+Devuelve un valor distinto de cero si \texttt{c} es cualquiera de las letras minúsculas \verb+[a-z]+ u otra minúscula local.
+\end{flushleft}
+
+\subsubsection{isupper} 
+
+\verb+int isupper (int c);+
+\begin{flushleft}
+Devuelve un valor distinto de cero si \texttt{c} es cualquiera de las letras mayúsculas \verb+[A-Z]+ u otra mayúscula local.
+\end{flushleft}
+
+\subsubsection{tolower}
+
+\verb+tolower (int c);+
+\begin{flushleft}
+Devuelve la correspondiente letra minúscula si existe y si \texttt{isupper(c)} es distinto de cero; en caso contrario, devuelve \texttt{c}.
+\end{flushleft}
+
+\subsubsection{toupper}
+
+\verb+toupper (int c);+
+\begin{flushleft}
+Devuelve la correspondiente letra mayúscula si existe y si \texttt{islower(c)} es distinto de cero; en caso contrario, devuelve \texttt{c}.
+\end{flushleft}

@@ -1,0 +1,228 @@
+%% SECCIÓN: MEMORIA DINÁMICA (autor: mustang)
+
+\section{Memoria dinámica}
+
+\label{mem_dinamica}
+
+\subsection{¿Qué es la memoria dinámica?}
+
+Supongamos que nuestro programa debe manipular estructuras de datos de
+longitud desconocida. Un ejemplo simple podría ser el de un programa
+que lee las líneas de un archivo y las ordena. Por tanto, deberemos
+leer un número indeterminado de líneas, y tras leer la última,
+ordenarlas. Una manera de manejar ese ``número indeterminado'', sería
+declarar una constante \verb+MAX_LINEAS+, darle un valor
+vergonzosamente grande, y declarar un array de tamaño
+\verb+MAX_LINEAS+. Esto, obviamente, es muy ineficiente (y
+feo). Nuestro programa no sólo quedaría limitado por ese valor máximo,
+sino que además gastaría esa enorme cantidad de memoria para procesar
+hasta el más pequeño de los ficheros.\\
+
+La solución consiste en utilizar memoria dinámica. La memoria dinámica
+es un espacio de almacenamiento que se solicita \textit{en tiempo de
+ejecución}\footnote{cuando el programa llega al punto en el que
+necesita espacio para una línea más}. De esa manera, a medida que el
+proceso va necesitando espacio para más líneas, va solicitando más
+memoria al sistema operativo para guardarlas. El medio para manejar la
+memoria que otorga el sistema operativo, es el puntero, puesto que no
+podemos saber \textit{en tiempo de compilación}\footnote{es decir, al programar}
+dónde nos dará huecos el sistema operativo (en la memoria de nuestro
+PC). 
+
+\subsection{El mapa de memoria en Unix}
+
+Antes de profundizar en el manejo de memoria dinámica, vamos a dar una
+breve visión del mapa de memoria en Unix, esto es, cómo se organiza la
+memoria de un proceso. Ante todo, esto es una simplificación, para
+poder situar mejor los punteros en su contexto.\\
+
+De entre las varias regiones de memoria que existen, hay dos que nos
+interesan al hablar de punteros (y sobre todo, al depurar): la pila y
+el heap. 
+
+\subsubsection{La pila}
+
+En inglés, stack. Su contenido se estudia en profundidad en las
+asignaturas de \textit{Laboratorio de Estructura de Computadores} y
+\textit{Compiladores}. Aquí solo diremos que cada vez que se realiza
+una llamada a una función, se introduce en la pila una estructura que
+almacena los parámetros pasados a la función, y las variables
+declaradas dentro de ella. Cuando la función retorna, dicha estructura
+es destruida. 
+
+\subsubsection{El heap}
+
+Esta región queda disponible para las solicitudes de memoria dinámica
+al sistema operativo. Su crecimiento va ligado a la disminución de la
+pila, y viceversa. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=145mm]{punteros/images/pila_heap.eps}
+\caption{Visión general del mapa de memoria}
+\end{centering}
+\end{figure}
+
+La figura anterior, muestra el resultado de solicitar al sistema
+operativo espacio en memoria dinámica para 8 chars. Podemos quedarnos
+con la idea de que las variables locales de una función, y los
+argumentos de la misma van en la pila, mientras que la memoria
+dinámica va en el heap.
+
+\subsection{Primitivas básicas}
+
+Las primitivas básicas para el manejo de memoria dinámica son: 
+
+\begin{itemize}
+\item \verb+malloc+
+\item \verb+realloc+
+\item \verb+free+
+\end{itemize}
+
+\subsubsection{\texttt{malloc}}
+
+Solicita memoria dinámica al sistema operativo. Su prototipo es:
+
+\begin{verbatim}
+void *malloc(size_t size);
+\end{verbatim}
+
+Devuelve un puntero tipo void, que apunta a la zona solicitada, o
+NULL, en caso de no poderse cumplir la solicitud (probablemente por
+falta de memoria libre). El tipo \verb+size_t+, tiene conversión
+directa desde los \verb+int+.\\
+
+Por ejemplo, si quisiéramos solicitar memoria dinámica para almacenar
+8 chars:
+
+\begin{verbatim} 
+char *p_char;
+p_char = malloc(8*sizeof(char));
+\end{verbatim}
+
+No obstante, el autor prefiere especificar a mano los cast (ver
+\ref{cast}) que se deben realizar para que encajen los argumentos:
+
+\begin{verbatim} 
+char *p_char;
+p_char = (char *) malloc( (size_t) 8*sizeof(char));
+\end{verbatim}
+
+\nota{La zona de memoria devuelta por \texttt{malloc} no se inicializa a
+  ningún valor concreto.}
+
+\subsubsection{\texttt{realloc}}
+
+Cambia el tamaño de una zona de memoria dinámica, pedida al sistema
+operativo previamente mediante la orden \verb+malloc+. Su prototipo es: 
+
+\begin{verbatim}
+void *realloc(void *ptr, size_t size);
+\end{verbatim}
+
+\begin{flushleft}
+Un ejemplo de uso de \verb+realloc+:
+\end{flushleft}
+
+\begin{verbatim}
+char *p_char;
+int size;
+
+size = 8 * sizeof(char);
+
+/* pedimos memoria en p_char */
+p_char = (char *) malloc( (size_t) size); 
+
+[.....]
+
+/* necesitamos más memoria en p_char */
+size *= 2;
+p_char = (char *) realloc(p_char, (size_t) size);
+\end{verbatim}
+
+\begin{flushleft}
+Un ejemplo habitual de uso de \texttt{realloc} está en
+\ref{ejemplo_realloc_duro}. 
+\end{flushleft}
+
+\nota{\texttt{realloc} puede devolvernos la zona de memoria solicitada
+  en otra posición. Esto es, independientemente de encargarse de
+  reservar el nuevo espacio solicitado, el puntero que retorna \texttt{realloc}
+  puede ser distinto al devuelto originalmente por \texttt{malloc}. Aun así,
+  \texttt{realloc} se encarga de que el contenido apuntado por el puntero sea
+  el mismo. Dicho de otra manera, si pedimos memoria para x
+  caracteres, y luego hacemos \texttt{realloc} sobre esa zona pidiendo x+n
+  caracteres, \texttt{realloc} se encargará de que los x primeros caracteres de
+  la zona devuelta (sea la misma zona pero más grande, o sea otra zona
+  distinta) sean idénticos. Como es habitual, si solicitamos más
+  espacio, ese espacio extra no será inicializado.}
+
+\subsubsection{\texttt{free}}
+
+Libera una zona de memoria dinámica, solicitada previamente mediante
+\verb+malloc+. Su prototipo es: 
+
+\begin{verbatim}
+void free(void *ptr);
+\end{verbatim}
+
+\begin{flushleft}
+Un ejemplo de uso de \texttt{free}:
+\end{flushleft}
+
+\begin{verbatim}
+
+
+char *p_char;
+
+/* pedimos memoria en p_char */
+p_char = (char *) malloc( (size_t) 8*sizeof(char)); 
+
+[...]
+
+free(p_char);
+\end{verbatim}
+
+\nota{Liberar una zona de memoria una segunda vez es
+  ilegal (ver \ref{error_doble_liberacion}).}
+
+\nota{Es habitual al empezar a manejar memoria dinámica, dejar la
+  tarea de liberar la memoria solicitada para el final. Esto es una
+  mala política de trabajo. Por cada \texttt{malloc} que utilizamos, debemos
+  pensar donde se va a hacer su \texttt{free}, y colocar ambos en el código. En
+  cuanto los programos crecen, es habitual olvidarse de liberar
+  memoria, y el consumo de nuestros programas pueden crecer de manera
+  desorbitada.}
+
+\subsubsection{strdup}
+
+Es una primitiva incluida en \textit{string.h}. La hemos incluido en
+el manual, porque se usa frecuentemente, aunque al igual que strdup,
+hay muchas llamadas al sistema similares (piden memoria dinámica por
+nosotros). Su prototipo es:
+
+\begin{verbatim}
+  char *strdup(const char *s);
+\end{verbatim}
+
+Es una función bastante cómoda, le suministramos un puntero a un
+string, y nos devuelve un puntero a una zona de memoria dinámica, que
+es una copia de la cadena que le hemos pasado. Dicho de otra manera,
+strdup equivale a hacer un \texttt{malloc} de la longitud de la cadena
+argumento, y a copiarla sobre la zona devuelta. Un ejemplo de uso sería:
+
+\begin{verbatim}
+char * pointer;
+char * data = "Hello world\n";
+
+pointer = strdup(data);
+
+printf("%s", pointer);
+
+free(pointer);
+\end{verbatim}
+%"
+
+Este caso es un candidato ideal para mostrar un error frecuente al
+trabajar con strings y punteros (ver
+\ref{error_confundir_strings_punteros}).

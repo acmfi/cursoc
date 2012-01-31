@@ -1,0 +1,36 @@
+%% SECCIÓN: STRINGS  (autor: ana)
+
+\section{Strings}
+\label{strings}
+
+Los arrays de caracteres se llaman \textbf{strings}. Funcionan
+exactamente igual que cualquier otro array.  En los \textbf{strings}
+no hace falta una variable que guarde el tamaño del array, puesto que
+se marca el final del array con el carácter ``\verb+\0+''.  La ventaja de los
+\textbf{strings} es que podemos rellenar y consultar varios elementos
+del array a la vez. En lugar de:
+
+\begin{verbatim}
+cadena[0] = 'h';
+cadena[1] = 'o';
+cadena[2] = 'l';
+cadena[3] = 'a';
+cadena[4] = '\0';
+\end{verbatim}
+
+Podremos hacer esto:
+
+\begin{verbatim}
+cadena = "hola";
+/* cuando metemos un texto entre comillas dobles, al copiarlo al array
+   el carácter '\0' se incluye solo. */
+print ("%s",cadena);
+\end{verbatim}
+
+Una serie de fallos comunes al trabajar con strings se exponen en
+\ref{error_considerar_puntero}.\\
+
+Existen funciones específicas para trabajar con strings
+(\verb+#include <string.h>+) para realizar ese tipo de
+tareas. Recomendamos al lector que consulte la documentación de
+funciones como \textit{strlen, strcpy, strncpy, strdup, strcat}.

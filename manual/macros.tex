@@ -1,0 +1,51 @@
+%%% MACROS %%%
+
+% Definicion
+\newcommand{\definicion}[2]{
+	\begin{flushleft}
+		\underline{\textsc{definición}}:  \textbf{#1}: \textit{#2}
+	\end{flushleft}
+}
+
+
+% Nota
+\newcommand{\nota}[1]{
+	\begin{center}
+	\begin{boxedminipage}{16cm}
+		\begin{flushleft}
+			\includegraphics[width=0.7cm]{im/imagen_nota.eps} \textbf{\underline{Nota:}} \begin{small}#1\end{small}
+		\end{flushleft}
+	\end{boxedminipage}
+	\end{center}
+}
+
+% Consejo
+\newcommand{\consejo}[1]{
+	\begin{flushleft}
+	\begin{tabular}{lr}
+	\includegraphics[width=0.7cm]{im/imagen_consejo} & \parbox{14cm}{\textbf{\underline{Consejo:}} #1}\\
+	\end{tabular}
+	\end{flushleft}
+}
+
+%% Ejemplo
+\newcommand{\ejemplo}[1]{
+	
+	\begin{flushleft}
+	\begin{tabular}{|cl|}
+	\hline
+	
+	& \includegraphics[width=0.7cm]{im/imagen_ejemplo.eps}  \begin{large}Ejemplo\end{large}\\
+	&\\
+	&
+	\begin{minipage}{17cm}
+		\listinginput{1}{#1}
+	\end{minipage} \\
+	&\\
+	\hline
+	\end{tabular}
+	\end{flushleft}
+	
+}
+
+

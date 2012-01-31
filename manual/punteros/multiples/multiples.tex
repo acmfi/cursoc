@@ -1,0 +1,189 @@
+%% SECCIÓN: INDIRECCIONES MÚLTIPLES
+\section{Indirecciones múltiples}
+
+Una herramienta muy útil que proporciona C en su manejo de punteros
+son las indirecciones múltiples, es decir, punteros que apuntan a
+punteros. Las indirecciones pueden ser dobles, triples, cuadruples \dots.
+
+\subsection{Declaración}
+
+Ejemplo:
+
+\begin{verbatim}
+char **ind_doble;
+char ***ind_triple;
+\end{verbatim}
+
+La primera declaración declararía un puntero de indirección doble de
+tipo char (léase: puntero que apunta a puntero), mientras que la
+segunda declararía un puntero de indirección triple a char (puntero
+que apunta un puntero que apunta a otro puntero [es decir, un
+lío]). Usar más de indirección triple es abiertamente desaconsejable.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=110mm]{punteros/images/ind_doble.eps}
+\caption{Indirección doble}
+\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=110mm]{punteros/images/ind_triple.eps}
+\caption{Indirección triple}
+\end{centering}
+\end{figure}
+
+\subsection{Utilización}
+
+\begin{verbatim}
+char **ind_doble;
+char *puntero_normal;
+
+/* Este acceso nos daría la dirección de la primera indirección */
+
+puntero_normal = *ind_doble;
+
+/* Estos dos accesos serían equivalentes (despues de la asignación de
+ * arriba) */
+ 
+*puntero_normal = 'A';
+**ind_doble = 'A';
+\end{verbatim}
+
+Esto es así porque \verb+*ind_doble+, es un puntero a char, es decir,
+como regla cada \verb+*+ que pongamos en un puntero con indirección
+múltiple quitamos un nivel de indirección.\\
+
+Una vez más, recordar la dualidad entre índices de array y
+punteros. Por ejemplo, cuando tratamos con un puntero de doble
+indirección, como puede ser \verb+char **data+, las expresiones
+\begin{itemize}
+\item\verb-data[1][2]- y 
+\item \verb-*(*(data+1)+2)- 
+\end{itemize}
+son equivalentes.
+
+\paragraph{Ejemplo}
+
+\begin{itemize}
+\item \verb+*ind_doble+ sería un puntero simple (de los vistos
+  anteriormente).
+\item \verb+**ind_doble+ sería el valor apuntado, es decir el
+  carácter de los ejemplos anteriores.
+\item \verb+*ind_triple+ sería un puntero de indirección doble.
+\end{itemize}
+
+\subsection{Ejemplos de uso}
+
+Uno de los usos de punteros de indirección múltiple, es, por ejemplo,
+leer un texto completo y almacenarlo por líneas.
+
+\begin{verbatim}
+char **texto;
+\end{verbatim}
+
+Cada \verb+*texto+ sería una línea, y cada \verb+**texto+ una letra de
+la línea seleccionada. Veámoslo con un programa:
+
+\ejemplo{punteros/multiples/ejemplo_punteros_multiples.c}
+
+\label{ejemplo_realloc_duro}
+El siguiente ejemplo es especialmente interesante, combina el uso de
+\verb-malloc- y \verb-realloc- con indirecciones múltiples. El programa utiliza un
+doble puntero, sobre el que ejecuta un \verb-malloc-, y posteriormente, un
+\verb-realloc- por cada nueva línea que vayamos leyendo. En cada nuevo
+espacio que devuelve \verb-realloc-, se ejecuta un \verb-malloc- para almacenar una
+nueva línea de texto.
+
+\ejemplo{punteros/multiples/multiples_realloc.c}
+
+Debemos tener en cuenta que el orden de los \verb-free- es importante:
+primero liberamos cada uno de los \verb-malloc- que se ejecutaron dentro del
+bucle (zonas sueltas de memoria, que almacenan una línea cada una). Al
+final, liberamos el doble puntero, sobre el que hemos ejecutado un
+\verb-malloc-, y varios \verb-realloc-. Si hiciéramos la liberación al revés,
+estaríamos pasándole como argumento a \verb-free-, punteros situados en una
+zona de memoria que ha sido liberada (ya no es nuestra). El
+comportamiento sería impredecible. \\
+
+Como se vió en la sección \ref{arrays_punteros}, es indiferente
+acceder a un puntero múltiple usando la notación de los arrays o el
+operador de acceso junto con la aritmética de punteros:
+
+\begin{verbatim}
+double ** pointer;
+double * p1;
+
+p1 = (double *) malloc((size_t) 8 * sizeof(double));
+pointer = &p1;  /* pointer apunta a p1 */
+
+pointer[0][0]=3.141592;
+pointer[0][1]=6.022E23;
+
+printf("%g %g\n",pointer[0][0], pointer[0][1]);
+printf("%g %g\n",**pointer, *(*pointer+1));
+\end{verbatim}
+
+\subsection{Cadenas enlazadas}
+
+Uno de los usos más utiles de punteros es la implementación de las
+cadenas enlazadas, que se estudian en la asignatura de
+\textit{Estructura de Datos I}.\\
+
+El tipo \verb+cadena_enlazada+ es un puntero a un nodo, consistente de
+un puntero al siguiente nodo (una cadena\_enlazada en si misma) y un
+dato de un tipo cualquiera.\\
+
+La dificultad de implementar es qué tipo declarar primero, nodo o
+cadena\_enlazada. Para ello, usaremos una técnica conocida como
+\textit{forward declaration}. La idea consiste en avisar al compilador
+de que estamos declarando un tipo, que es un puntero a una estructura,
+pero que dicha estructura aún no la hemos declarado, la declararemos
+después. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=100mm]{punteros/images/cadenas.eps}
+\caption{Ejemplo de una cadena enlazada}
+\end{centering}
+\end{figure}
+
+Una manera incorrecta de implementarlas sería:
+
+\begin{verbatim}
+typedef nodo * cadena_enlazada;
+
+struct nodo{
+  cadena_enlazada siguiente;
+  int dato;
+}
+\end{verbatim}
+
+debido a que el compilador no tiene definido el tipo \verb+nodo+ en el
+momento de definir \verb+cadena_enlazada+. La forma correcta sería:
+
+\begin{verbatim}
+typedef struct nodo *cadena_enlazada;
+        
+struct nodo{
+  cadena_enlazada siguiente;
+  int dato;
+};
+\end{verbatim}
+
+o también, si quisieramos realizar el \verb-typedef- sobre ambos tipos:
+
+\begin{verbatim}
+typedef struct nodo *cadena_enlazada;
+        
+typedef struct nodo{
+  cadena_enlazada siguiente;
+  int dato;
+};
+\end{verbatim}
+
+Un ejemplo de uso de las cadenas enlazadas es:
+
+\ejemplo{punteros/multiples/enl.c}
+

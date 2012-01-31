@@ -1,0 +1,64 @@
+%
+% SECCIÓN: INTRODUCCION A PUNTEROS
+%
+
+\section{Introducción}
+
+\subsection{¿Qué es un puntero?}
+
+Podríamos imaginar un puntero como una \emph{flecha} que apunta a otra
+variable, pero esto es sólo para aclararnos a la hora de hacer
+esquemas. En realidad, dentro del ordenador, una variable puntero no
+es más que una dirección de memoria, un puntero nos dice
+\textbf{dónde} se encuentra almacenado el valor de la variable a la que apunta. Si
+nos quedamos con esta última definición (la de dirección de memoria),
+nos será más fácil aclararnos cuando trabajemos con punteros a gran
+escala.\\
+
+Como ya sabemos, al declarar una variable lo que estamos haciendo es
+\emph{reservar} espacio en memoria para esa variable (el tamaño del
+espacio reservado dependerá del \emph{tipo} de la variable). Pues
+bien, al declarar un puntero lo que hacemos es reservar espacio para
+almacenar \emph{una dirección de memoria}, no el contenido de la
+variable.\\
+
+La siguiente figura muestra tres variables, de tipos \verb+char+, \verb+int+ y
+\verb+double+, y un puntero a cada una de ellas:
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=180mm]{punteros/images/general.eps}
+\caption{Punteros a variables \texttt{char}, \texttt{int} y \texttt{double}}
+\end{centering}
+\end{figure}
+
+Tomemos como ejemplo la variable de tipo \verb+char+. Está almacenada en la
+dirección de memoria (fictícia) 100. El contenido de dicha posición
+(esto es, el contenido de la variable) es el carácter ``a''. Por otro
+lado, el puntero p1 se encuentra en la dirección 210, y su valor es
+100. Como vemos, el contenido de la variable p1 (puntero) es la
+dirección de la variable \verb+char+.\\
+
+Como se ve en la figura, mientras que el tamaño que ocupan en memoria
+las variables es distinto (un \verb+char+ ocupa un byte, un double ocupa 8
+bytes), el tamaño que ocupan las variables tipo puntero es siempre el
+mismo: 4 bytes. Esto es lógico: las direcciones de memoria siempre
+ocupan el mismo tamaño. \footnote{Es importante recordar que los 
+tamaños de las variables \texttt{char}, \texttt{int} y \texttt{double} aquí especificados son 
+dependientes de la plataforma.} 
+
+\subsection{¿Para qué necesito yo un puntero?}
+
+Es posible que al abordar un concepto algo más abstracto que los
+que surgen al aprender un lenguaje de programación, sea difícil
+imaginar para qué sirve. Al plantearnos esa pregunta, surgen dos
+respuestas inmediatas:
+
+\begin{itemize}
+\item para poder usar ``memoria dinámica''.
+\item para poder usar ``argumentos por referencia''.
+\end{itemize}
+
+Ambos conceptos van a ser tratados con más profundidad en las
+secciones \ref{mem_dinamica} y \ref{valor_vs_referencia}.
+

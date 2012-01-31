@@ -1,0 +1,120 @@
+% Seccion Punteros a funciones
+\section{Punteros a funciones}
+ 
+\subsection{El concepto}
+
+Esta es quizá una de las funcionalidades que menos conoce el
+programador que viene de otros lenguajes, pero que puede resultar muy
+útil para resolver problemas de ``orden superior'' con una simpleza y
+elegancia no muy corrientes en el paradigma imperativo.\\
+
+Un puntero a función es una variable que guarda la posición de memoria
+de una función. Por ejemplo:\\
+ 
+\verb+void (*funcion)(void)+\\
+
+Es un puntero a una función sin argumentos, ni valor de retorno.
+
+\subsection{¿Para qué sirven?}
+
+Como ya vimos anteriormente, un puntero ``corriente'' nos permitía
+entre otras cosas: utilizar estructuras de datos dinámicas, pasar
+variables por referencia en vez de por valor.\\
+
+Un puntero a función nos permite hacer cosas más
+``divertidas''. Podemos cargar librerías de forma dinámica, hacer que
+nuestro código se automodifique en tiempo de ejecución, programar
+rutinas de orden superior, e implementar otra serie de funcionalidades
+que amenizan nuestra tarea como desarrolladores.
+
+\subsection{Ejemplo de orden superior}
+
+\nota{Cuando hablamos de orden superior nos referimos a la capacidad
+que tiene un lenguaje para operar con funciones como si variables
+comunes se tratara. Con orden superior se puede, por ejemplo, pasar
+una función como argumento a otra función.}
+
+El siguiente ejemplo hace uso de la función \verb+qsort()+. Dicha
+función reordena listas de elementos de cualquier tipo. La lista debe
+ser un vector de elementos de un tamaño fijo. Por ejemplo podemos
+reordenar una lista de estructuras de datos, o una simple lista de
+enteros. El algoritmo quicksort es siempre el mismo. Lo único que
+diferencia un caso de otro es el ``criterio'' de ordenación de la
+lista. En un caso hay que comparar dos enteros, y en el otro hay que
+utilizar un criterio de comparación adaptado a la estructura de
+datos. Si la estructura representa la lista de empleados de una
+empresa, habrá que preguntarse si queremos ordenar por nombre de
+empleado, por salario o por cualquier otro criterio variopinto.\\
+
+``El criterio'' de ordenación es una función que debe utilizar \verb+qsort()+
+para saber cómo ordenar las listas. Por ese motivo, \verb+qsort()+ debe
+recibir un puntero a la función que compare los elementos de la lista.
+
+\ejemplo{avanzados/ejemplo_punteros_funciones.c} 
+
+\subsection{Ejemplo de código mutante}
+
+El siguiente programa muestra un programa que se reescribe en tiempo
+de ejecución. Para ello primero pide 100 Bytes de memoria, después
+escribe en esa memoria las instrucciones correspondientes a una
+función, y finalmente ejecuta la función con distintas variantes.
+
+\ejemplo{avanzados/ejemplo_punteros_funciones_2.c}
+
+El anterior ejemplo rellena unas posiciones de memoria con código
+máquina. En concreto, el código máquina es equivalente a:
+
+\begin{verbatim}   
+int imprime()
+{
+  return 0x10;
+}
+\end{verbatim}   
+
+Que en ensamblador de Intel x86 corresponde a:
+
+\begin{verbatim}   
+imprime:        
+        pushl   %ebp
+        movl    %esp, %ebp
+        movl    $$10, %eax
+        popl    %ebp
+        ret          
+\end{verbatim}   
+
+y en binario Intel x86
+
+\begin{verbatim}   
+memoria[0] = 0x55;
+memoria[1] = 0x89;
+memoria[2] = 0xE5; 
+memoria[3] = 0xB8; // mov eax <= 0x10 valor de retorno 
+memoria[4] = 0x10; // 0x10
+memoria[5] = 0x00; 
+memoria[6] = 0x00; 
+memoria[7] = 0x00;
+memoria[8] = 0x5D; // ret
+memoria[9] = 0xC3;
+\end{verbatim}   
+
+Para obtener el código equivalente a un programa de C en ensamblador
+se ha empleado: 
+
+\begin{verbatim}   
+  gcc -S fichero.c -o fichero.s # generar ensamblador
+\end{verbatim}   
+     
+Para obtener el código máquina se ha utilizado el ensamblador:
+\begin{verbatim}   
+  as fichero.s -o fichero.o # generar binario
+\end{verbatim}   
+
+Y las herramientas de visualización hexadecimal
+\begin{verbatim}
+  hexedit fichero.o 
+  hexdump -C fichero.o
+\end{verbatim}   
+
+
+
+

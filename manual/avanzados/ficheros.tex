@@ -1,0 +1,178 @@
+% Subseccion Entrada/Salida con archivos
+\section{Entrada/Salida con archivos: Un pequeño tutorial}
+
+En el capítulo \ref{chapter:libstd} hemos visto, de forma general, algunas de
+las funciones más importantes proporcionadas por la librería estándar de C. Entre otras
+funciones se describieron las rutinas para realizar entrada/salida con archivos. En
+esta sección vamos a ver cómo utilizar ese conjunto de funciones para leer
+y escribir en archivos. Dado que ya hemos explicado el funcionamiento 
+de cada una de las funciones necesarias nos centraremos en describir el procedimiento.
+
+
+
+\begin{flushleft}
+Los pasos fundamentales a la hora de operar con ficheros son los siguientes:
+\end{flushleft}
+\begin{enumerate}
+        \item{Declarar una variable tipo \textit{flujo}, que representará el fichero.}
+        \item{Abrir el fichero y asociar la variable con ese fichero.}
+        \item{Leer/Escribir en el fichero.}
+        \item{Cerrar el fichero.}
+\end{enumerate}
+
+\begin{flushleft}
+Pasaremos a describir cada uno de los pasos más detalladamente
+\end{flushleft}
+
+\subsection{Variables de \textit{flujo}}
+
+La librería estándar de C tiene definido un tipo de datos, \verb+FILE *+ que representa un
+\textit{flujo} de bytes. Asociado a este flujo puede estar un archivo, una posición de
+memoria, el teclado, etc... La declaración:
+\begin{verbatim}
+FILE *fich;
+\end{verbatim}
+
+Declara que la variable \verb+fich+ representará un flujo de datos, que luego asociaremos.
+
+
+\subsection{Abrir el fichero}
+Una vez que tenemos declarada una variable de tipo \verb+FILE *+ tenemos que asociarla con el fichero
+que queremos abrir. Esto se hace mediante la llamada \verb+fopen+.\\
+
+Como se comenta en \ref{subsection:fopen}, \verb+fopen+ admite varios \textit{modos} de apertura
+de ficheros. Si quisiéramos abrir el fichero para lectura (esto es, leer los datos que contiene y no
+modificarlo), utilizaríamos \verb+fopen+ de la siguiente manera:
+\begin{verbatim}
+fich = fopen( "fichero.txt", "r" );
+\end{verbatim}
+
+\begin{flushleft}
+Si en cambio quisiéramos crear un nuevo fichero haríamos lo siguiente:
+\end{flushleft}
+\begin{verbatim}
+fich = fopen( "fichero.txt", "w" );
+\end{verbatim}
+
+\begin{flushleft}
+Por último es posible que necesitemos añadir datos al final de un fichero ya existente:
+\end{flushleft}
+
+\begin{verbatim}
+fich = fopen( "fichero.txt", "a" );
+\end{verbatim}
+
+
+
+\subsection{Leer y escribir en un fichero}
+
+Ya vimos en el capítulo \ref{chapter:libstd} algunas primitivas de entrada/salida que ofrece
+la librería estándar. Veamos como se usan en la práctica. 
+
+
+\subsubsection{Lectura}
+Leer un archivo que tenga un formato determinado es una tarea fácil utilizando la rutina
+\verb+fscanf+, que funciona de forma análoga a \verb+scanf+. 
+
+Supongamos que queremos leer una línea del fichero \verb+notas.txt+ que contiene un listado
+de notas de alumnos con el siguiente formato:
+\begin{verbatim}
+Nombre Apellido1 Apellido2 notaParcial1 NotaParcial2
+\end{verbatim}
+
+\begin{flushleft}
+El fragmento de código que realizaría esta lectura sería el siguiente:
+\end{flushleft}
+
+\begin{verbatim}
+FILE *fich;
+char nombre[10], apellido1[10], apellido2[10];
+float nota1,nota2;
+
+fich = fopen( "notas.txt", "r" );
+fscanf( fich, "%s %s %s %f %f\n", nombre, apellido1, apellido2, &nota1, &nota2 );
+\end{verbatim}
+
+\nota{Tienes que tener en cuenta que la variable \texttt{fich} funciona como
+un \textit{apuntador} al archivo. Cuando se realiza una lectura este apuntador
+se desplaza de forma que los datos leídos quedan \emph{por detrás de él}. En la 
+práctica esto quiere decir que para volver a leer unos datos que ya has leído
+previamente tienes que recolocar este puntero, utilizando la rutina \texttt{fseek()}}
+
+Una necesidad común a la hora de leer de un archivo consiste en saber cuando 
+hemos llegado al final del archivo. Esto se realiza con la rutina \verb+feof()+, que
+devuelve un valor distinto de cero cuando hemos llegado al final del archivo.
+El siguiente ejemplo lee todas las líneas del archivo \verb+notas.txt+, imprimiendo
+por pantalla los datos:
+
+\ejemplo{avanzados/ejemplo_ficheros1.c}
+
+
+Otra opción a la hora de leer de un archivo es leer un número determinado de caracteres y almacenarlos
+en un \textit{buffer} para posterior proceso. Esto se puede realizar con la rutina \verb+fgets+. 
+
+
+\subsubsection{Escritura}
+
+\begin{flushleft}
+Para escribir sobre un archivo tenemos disponibles las siguientes primitivas:
+\end{flushleft}
+\begin{itemize}
+        \item{\verb+fprintf+: Escritura con formato. Funcionamiento similar a \verb+printf+}
+        \item{\verb+fputs+: Escribe un \textit{buffer} de caracteres en archivo especificado}
+\end{itemize}
+
+\nota{Obviamente para poder escribir sobre un archivo tenemos que abrir el mismo en modo
+escritura}
+
+
+
+\subsection{Cerrar el fichero}
+Una vez que hemos terminado de operar con el fichero hay que realizar una operación de
+\textbf{cierre} sobre la variable asociada, utilizando la rutina \verb+fclose()+.
+Una vez que hemos cerrado un fichero no podremos realizar ninguna operación de lectura/escritura
+sin antes volver a abrirlo.
+
+
+
+
+\subsection{Ejemplo}
+El siguiente ejemplo utiliza todas las operaciones vistas hasta ahora para analizar los
+datos del fichero \verb+notas.txt+ (que contiene notas de alumnos, en el formato especificado
+anteriormente), escribiendo los resultados en el archivo\\ \verb+notas_finales.txt+
+
+\ejemplo{avanzados/ejemplo_ficheros2.c}
+
+
+
+%Los ficheros, en contraposición con las estructuras de datos vistas
+%hasta ahora (variables simples, vectores, registros, etc.), son
+%estructuras de datos almacenadas en memoria secundaria. Para utilizar
+%la información en memoria principal se emplea fundamentalmente la
+%instrucción de asignación; sin embargo, para guardar o recuperar
+%información de un fichero es necesario realizar una serie de
+%operaciones.
+%El formato de declaración de un fichero es el siguiente:
+%
+%\begin{verbatim}
+%FILE * nom_var_fich;
+%\end{verbatim}
+%
+%En otros lenguajes la declaración del fichero determina el tipo de
+%datos que se van a almacenar en él. En C la filosofía es distinta,
+%todos los ficheros almacenan bytes y es cuando se realiza la apertura
+%y la escritura cuando se decide cómo y qué se almacena en el mismo;
+%durante la declaración del fichero no se hace ninguna distinción sobre
+%el tipo del mismo.\\
+%
+%Hasta ahora, para obtener y almacenar datos de una estructura de datos
+%bastaba con realizar asignaciones a la misma. Para utilizar los
+%ficheros el procedimiento es distinto. Antes de usar un fichero es
+%necesario realizar una operación de apertura del mismo;
+%posteriormente, si se desea almacenar datos en él hay que realizar una
+%operación de escritura y si se quiere obtener datos de él es necesario
+%hacer una operación de lectura. Cuando ya no se quiera utilizar el
+%fichero se realiza una operación de cierre del mismo para liberar
+%parte de la memoria principal que pueda estar ocupando (aunque el
+%fichero en sí está almacenado en memoria secundaria, mientras está
+%abierto ocupa también memoria principal).

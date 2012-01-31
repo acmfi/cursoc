@@ -1,0 +1,158 @@
+% seccion El preprocesador
+\section{El preprocesador}
+\label{preprocesador}
+
+El preprocesador es algo característico de C/C++, que no se suele encontrar en otros lenguajes
+ de programación. El preprocesador actúa sobre el programa fuente, antes de que empiece 
+la compilación propiamente dicha, para realizar ciertas operaciones.\\
+
+
+Una de estas operaciones es, por ejemplo, la sustitución de constantes simbólicas, 
+como vimos en el capítulo de constantes. También permite definir macros, 
+que son parecidas a funciones, \emph{pero no iguales}, y realizar compilación condicional. 
+En general se encarga de modificar el código fuente, según una serie de directivas. 
+Estas se reconocen puesto que empiezan por \verb-#- y no tienen 
+que terminar en \verb-;-, a diferencia de las instrucciones de C.
+
+
+\subsection{\texttt{\#include}: inclusión de otros ficheros}
+\label{include}
+Cuando en un archivo de código fuente se encuentra una línea con un \verb-#include- 
+seguido de un nombre de archivo, el preprocesador \emph{incluye} el archivo 
+en el punto donde se encuentra la directiva, exactamente igual que si hiciéramos copiar/pegar. 
+La sintaxis de este comando es la siguiente: 
+\begin{verbatim}
+#include "nombre_del_archivo" 
+\end{verbatim}
+o
+\begin{verbatim}
+#include <nombre_del_archivo> 
+\end{verbatim}
+La diferencia entre la primera forma (con comillas \verb-"-\ldots\verb-"-) y la segunda forma 
+(con los símbolos \verb-<-\ldots\verb->-) está en el directorio de búsqueda de los archivos 
+a incluir. En la forma con comillas se busca el archivo en el directorio actual y posteriormente 
+en el (o los) directorio(s) estándar de librerías\footnote{los directorios de librerías dependen del sistema operativo y compilador que se use}. 
+En la forma que utiliza los símbolos \verb-<-\ldots\verb->- se busca directamente en el 
+directorio estándar de librerías, sin buscar en el directorio actual. 
+
+\consejo{Los archivos de la librería estándar (stdio.h, math.h, etc...) 
+se suelen incluir con \texttt{<...>} mientras que los archivos hechos por el propio programador 
+se ponen entre comillas. Es una cuestión de costumbre más que otra cosa.}
+
+Los archivos incluidos pueden contener a su vez directivas \verb-#include-, esto se conoce como 
+inclusión anidada. El número de niveles de anidamiento depende del compilador, pero ha de ser 
+al menos 8 en C89 y 15 en C99 (en cualquier caso es más que de sobra).\\
+
+Este comando del preprocesador se utiliza normalmente para incluir las cabeceras 
+(\textit{headers} en inglés). Estos son archivos con los prototipos de las funciones de librería o 
+con las funciones definidas para el programa en cuestión\footnote{las cabeceras son 
+el equivalente en C/C++ de los archivos ``.ads" de ADA}.
+
+\subsection{\texttt{\#define:} creación de macros}
+
+Como vimos, con la directiva \verb-#define- se define un \textit{alias}, es decir una sustitución de texto. 
+Esto, que usábamos para definir constantes, se puede utilizar de la misma manera para definir macros. 
+En efecto, podemos poner parámetros a esas sustituciones, que se comportan entonces como si de una
+pseudo-función se tratara.\\
+
+En una macro con argumentos, los argumentos se sustituyen en el texto de reemplazo, 
+y a continuación la macro se \emph{expande}, es decir, en el programa el texto de reemplazo reemplaza al identificador y a la lista de argumentos.\\
+Veamos por ejemplo:
+
+\begin{verbatim}
+#define PI 3.14
+#define AREA_CIRCULO(x) PI * (x) * (x)
+\end{verbatim}
+
+\begin{flushleft}
+Ahora podemos usar la macro como si fuera función normal:
+\end{flushleft}
+
+\begin{verbatim}
+void main() { 
+   int a;
+   a = AREA_CIRCULO(3); 
+}
+\end{verbatim}
+
+\begin{flushleft}
+Durante la compilación la macro se expande a:
+\end{flushleft}
+
+\begin{verbatim}
+  a = 3.14 * (3) * (3)
+\end{verbatim}
+y obtenemos el resultado esperado.\\
+
+Las macros nos permiten insertar código en el programa directamente, evitando la sobrecarga
+de invocar a una función (pasar parámetros a la pila, realizar un salto, 
+recibir parámetros \ldots)\footnote{En C++ se puede hacer lo mismo usando la directiva \emph{inline}.} pero conservando la legibilidad del programa. 
+Por otra parte permite realizar cálculos durante la compilación, en lugar de realizarlos 
+durante la ejecución. Así en el ejemplo que nos ocupa el compilador le da directamente el valor
+adecuado a la variable ``a", en lugar de insertar instrucciones para que se evalúe cada vez que se use.\\
+
+Es importante no olvidar los \textsc{paréntesis} alrededor de los parámetros en la definición
+de la macro, de lo contrario la expansión de parámetros puede ser incorrecta, por ejemplo:
+\begin{verbatim}
+#define AREA_CIRCULO(x) PI * x * x
+void main() { 
+   int a,b;
+   a = AREA_CIRCULO(c + 3); 
+}
+\end{verbatim}
+expande a:
+\begin{verbatim}
+  a = 3.14 * c + 3 * c + 3
+\end{verbatim}
+que, por culpa de la precedencia de operadores, es equivalente a 
+\begin{verbatim}
+  a = (3.14 * c) + (3 * c) + 3
+\end{verbatim}
+en lugar de expandir a:
+\begin{verbatim}
+  a = 3.14 * (c + 3) * (c + 3)
+\end{verbatim}
+que es lo que queríamos.
+
+
+\subsection{Compilación condicional}
+
+Hay varias directivas que permiten compilar selectivamente partes del código fuente del programa. 
+Este proceso se llama \emph{compilación condicional} y se utiliza mucho cuando se quiere mantener
+versiones diferentes de un programa. Por ejemplo se puede mantener una versión demo o recortada,
+gratuita y otra mas potente de pago, y las partes de código que difieran entre las dos se compilan 
+según sea la plataforma de destino.
+\subsubsection{uso de \#if, \#else, \#elif y \#endif} 
+Estas directivas permiten incluir parte del código según el valor que tome una constante de preprocesador.\\
+Veamos un ejemplo:
+\begin{verbatim}
+#define MAX 10
+
+int main(void){
+#if MAX > 99
+   printf("versión PRO, compilada para arrays mayores de 99.\n");
+   ...
+#else
+   printf("versión DEMO, compilada para arrays menores de 99.\n");
+   ...
+#endif
+   return 0;
+}
+\end{verbatim}
+Aquí, al ser MAX menor de 99 el bloque que sigue al \verb-#if- no se compila, en su lugar se 
+compila la alternativa del bloque \verb-#else-.\\
+
+Se pueden hacer selecciones múltiples mediante \verb-#elif- que equivale a ``else if"
+
+\subsubsection{uso de \#ifdef , \#ifndef y \#undef}
+
+Estas directivas permiten compilación condicional basándose en si esta definida una macro o no,
+independientemente del valor que tenga. Se usan a menudo para tener una versión de prueba con
+chequeos adicionales (de rangos, de corrección de parámetros\ldots ), y otra final, sin ellos 
+(y por tanto más rápida).\\
+
+\nota{No es mala idea definir una macro DEBUG, por ejemplo, que permita alternar entre
+compilación con chequeos extra y versión final}
+
+Con \verb-\#undef- podemos ``desdefinir'' una definición previamente realizada.
+

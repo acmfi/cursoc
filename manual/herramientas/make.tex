@@ -1,0 +1,137 @@
+\section{Control de dependencias: \texttt{make}}
+La mayoría de nuestros proyectos de programación
+no constarán de un solo fichero fuente sino de varios (puede
+incluso que de centenas de ellos). Cuando editamos un fichero de código
+fuente y lo modificamos pasamos a compilarlo (con GCC o cualquier otro
+compilador). Hay tener en cuenta que puede haber otros ficheros de
+código fuente que dependan del que acabamos de modificar. Por lo tanto, esos
+ficheros de código fuente que dependen del que acabamos de modificar
+también deben ser compilados. La herramienta make nos evita la tediosa
+tarea de compilar las dependencias, por no hablar de que nos
+evita la necesidad de tener presente en todo momento cuales son las
+dependencias entre ficheros de código fuente. Para ello nos valemos de
+un fichero (típicamente con nombre \texttt{Makefile}) en el que
+declaramos las dependencias entre ficheros de código fuente y las
+órdenes necesarias para actualizar cada fichero. Una vez escrito el
+fichero \texttt{Makefile}, cada vez que cambiemos algún fichero
+fuente, con la orden:
+\begin{verbatim}
+make
+\end{verbatim}
+basta para que se realicen todas las recompilaciones necesarias.
+Veamos ahora el formato básico del fichero \texttt{Makefile}.
+El fichero Makefile más simple está compuesto por ``reglas'' de este
+aspecto.
+\begin{verbatim}
+objetivo ... : prerrequisitos ...
+            comando
+            ...
+            ...
+\end{verbatim}
+
+Un objetivo suele ser el nombre de un fichero generado por un
+programa; ejemplos de objetivos son ficheros ejecutables u objetos. Un
+objetivo puede ser también el nombre de una acción a llevar a cabo,
+como ``clean'', que veremos más adelante en un ejemplo.\\
+
+Un prerrequisito es un fichero que se usa como entrada para crear un
+objetivo. Un objetivo con frecuencia depende de varios ficheros.\\
+
+Un comando es una acción que \texttt{make} ejecuta. Una regla puede
+tener más de un comando, cada uno en su propia
+línea. \emph{\bf{Atención}:} ¡hay que poner un tabulador al
+principio de cada línea de comando!\\
+
+Normalmente un comando está en una regla con prerrequisitos y
+contribuye a crear un fichero objetivo si alguno de los prerrequisitos
+cambia. Un ejemplo de excepción a esto es el objetivo ``clean'', que no
+tiene prerrequisitos. Una regla, por tanto, explica como y cuando
+reconstruir ciertos ficheros que son objetivos de reglas.\\
+
+A continuación tenemos un ejemplo de un Makefile que describe la manera en la
+que un fichero ejecutable llamado ``edit'' depende de ocho
+ficheros objeto que a su vez dependen de ocho ficheros de código
+fuente C y tres archivos de cabecera. Los ocho ficheros de código
+fuente C dependen del archivo de cabecera ``defs.h'' (como dijimos
+anteriormente, mediante la directiva \texttt{\#include}). Sólo los
+ficheros de código que definen los comandos de edición dependen de
+``command.h'', y sólo los ficheros de operaciones de bajo nivel que
+cambian el buffer del editor dependen de ``buffer.h''.
+
+\begin{verbatim}
+edit: main.o kbd.o command.o display.o \
+      insert.o search.o files.o utils.o
+       gcc -o edit main.o kbd.o command.o display.o \
+             insert.o search.o files.o utils.o
+
+main.o : main.c defs.h
+       gcc -c main.c
+
+kbd.o : kbd.c defs.h command.h
+       gcc -c kbd.c
+
+command.o : command.c defs.h command.h
+       gcc -c command.c
+
+display.c : display.c defs.h buffer.h
+       gcc -c display.c
+
+insert.o : insert.c defs.h buffer.h
+       gcc -c insert.c
+
+search.o : search.c defs.h buffer.h
+       gcc -c search.c
+
+files.o : files.c defs.h buffer.h command.h
+       gcc -c files.c
+
+utils.o : utils.c defs.h
+       gcc -c utils.c
+
+clean :
+       rm -f edit *.o
+
+\end{verbatim}
+
+En el ejemplo dividimos cada línea larga en dos líneas usando la
+contrabarra\footnote{El carácter $\backslash$}. Para crear el fichero ejecutable
+  ``edit'', escribimos: 
+\begin{verbatim}
+make
+\end{verbatim}
+Para borrar el fichero ejecutable y todos los ficheros objeto del
+directorio, escribimos:
+\begin{verbatim}
+make clean
+\end{verbatim}
+
+En el fichero Makefile del ejemplo, son objetivos el fichero
+ejecutable ``edit'' y los ficheros objeto ``main.o'' y ``kbd.o'', entre
+otros. Son prerrequisitos ficheros como ``main.c'' y ``defs.h''. De hecho,
+cada fichero ``.o'' es tanto objetivo como prerrequisito. Son comandos
+``gcc -c main.c'' y ``gcc -c kbd.c''.\\
+
+Cuando un objetivo es un fichero, necesita ser recompilado si
+cualquiera de los prerrequisitos cambia. Además, cualquier
+prerrequisito que es generado automáticamente debería ser actualizado
+primero. En el ejemplo, ``edit'' depende de cada uno de los ocho
+ficheros objeto; el fichero objeto ``main.o'' depende a su vez del fichero de
+código fuente ``main.c'' y del fichero de cabecera ``defs.h''. \\
+
+Un comando de shell sigue a cada línea que contiene un objetivo y
+prerrequisitos. Estos comandos de shell indican como actualizar el
+fichero objetivo. Recuerda que hay que poner un tabulador al principio
+de cada línea de comando para distinguir líneas de comando de otras
+líneas en el Makefile. (Ten en cuenta que \texttt{make} no sabe nada
+sobre cómo funcionan los comandos. Depende de tí proporcionar los
+comandos que actualizaran los ficheros objetivos de manera apropiada).\\
+
+El objetivo ``clean'' no es un fichero, es simplemente el nombre de una
+acción. Tampoco es un prerrequisito de otra regla ni tiene
+prerrequisitos. Por tanto, \texttt{make} nunca hará nada con este
+objetivo a no se que se le pida específicamente.\\
+
+Con esto hemos visto el funcionamiento más esencial de la herramienta
+\texttt{make}. Pero \texttt{make} es mucho más. En la bibliografía
+podemos encontrar referencias a documentación más extensa de
+\texttt{make}. 

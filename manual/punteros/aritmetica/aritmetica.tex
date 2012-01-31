@@ -1,0 +1,125 @@
+%% SECCIÓN: ARITMETICA DE PUNTEROS (autor: jorge)
+\section{Aritmética de punteros}
+\label{punteros_aritmetica}
+
+Es posible realizar operaciones aritméticas sobre las variables de
+tipo puntero para conseguir que apunten a una posición diferente.
+Por ejemplo:
+
+\begin{verbatim}
+
+char cadena[5];
+char *puntero;
+
+puntero = &cadena[0]; /* puntero apunta a cadena[0] */
+*puntero = 'h';       /* cadena[0] = 'h' */
+*(puntero+1) = 'o';   /* cadena[1] = 'o' */
+*(puntero+2) = 'l';   /* cadena[2] = 'l' */
+*(puntero+3) = 'a';   /* cadena[3] = 'a' */
+*(puntero+4) = '\0';  /* cadena[4] = '\0' */
+
+\end{verbatim}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=70mm]{punteros/images/aritmetica0.eps}
+\caption{Aritmética sobre un puntero}
+\end{centering}
+\end{figure}
+
+\subsection{Contexto}
+
+Se debe tener en cuenta que \verb-puntero+x- apuntará a la dirección
+de puntero sumándole \verb+x+ veces el espacio ocupado por un elemento
+del tipo al que apunta, no el número de bytes. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=130mm]{punteros/images/aritmetica1.eps}
+\caption{Suma sobre un puntero a integer}
+\end{centering}
+\end{figure}
+
+El programa mostrado a continuación nos muestra la diferencia entre
+considerar un puntero a integer y un puntero a char, en lo que se
+refiere a la suma: 
+
+\ejemplo{punteros/aritmetica/ejemplo_arit_punteros.c}
+
+El resultado de ejecutar 
+\footnote{Una vez más, recordamos que el tamaño de las variables en C
+  es dependiente de la plataforma sobre la que compilemos/ejecutemos}
+el código anterior es:
+
+\begin{verbatim}
+Tamaño de int: 4
+Tamaño de char: 1
+Distancia entre punteros sucesivos a int : 4
+Distancia entre punteros sucesivos a char: 1
+\end{verbatim}
+
+Queda clara la importancia entre declarar un puntero de un tipo o
+otro. Ambos punteros del ejemplo ocupan lo mismo, ambos apuntan a
+direcciones de memoria del sistema, pero cuando el compilador tiene
+que generar código para realizar operaciones aritméticas, lo hace de
+manera distinta en función del tipo de puntero.
+
+\subsection{Tipos de operaciones}
+
+Las operaciones soportadas sobre punteros son:
+
+\begin{itemize}
+
+\item Suma y resta de valores enteros ($+$,$-$,$++$ y $--$)
+\item Comparación y relación ($<$,$>$,$<=$,$>=$,$==$ y $!=$)
+\item Valor booleano (comparación con NULL)
+
+\end{itemize}
+
+\subsection{Ejemplos de aritmética}
+
+A continuación mostramos un ejemplo de una función que recibe dos
+strings (ver \ref{strings}), y copia uno sobre otro. En la segunda
+versión, las operaciones de aritmética de punteros se han agrupado,
+para escribir menos código. La finalidad de la segunda versión es
+acostumbrar al lector a la complejidad de algunas operaciones en C
+(función \textit{copiar}).\\
+
+Primera versión: 
+
+\ejemplo{punteros/aritmetica/ejemplo_suma_punteros.c}
+
+Segunda versión:
+
+\ejemplo{punteros/aritmetica/ejemplo_suma_punteros_dificil.c}
+
+Comentaremos la siguiente sentencia:
+
+\begin{verbatim}
+  while(*dest++ = *orig++); 
+\end{verbatim}
+
+Para entender la sentencia, la observaremos desde el punto de vista de la
+precedencia entre operadores. En primer lugar, se ejecutarían los
+post-incrementos, pero su efecto sólo tendría lugar al acabar la
+sentencia (la expresión parentizada). Por tanto, lo siguiente en
+ejecutarse sería el operador de acceso (``*''). Eso accedería a los
+caracteres apuntados por \verb+dest+ y por \verb+orig+. Después se ejecutaría la
+asignación, (copia de un carácter de la cadena). Como se vió en
+\ref{operador_asignacion}, la asignación ``devuelve'' el valor
+asignado, por lo que la expresión parentizada equivale al valor que se
+asigna. Cuando se asigna el último carácter de la cadena (\verb+\0+),
+el valor de la expresión es falso (\verb+\0+ equivale a 0, esto es,
+falso), y el  \verb+while+ saldría. Antes de terminar de procesar, se
+incrementarían ambos punteros (post-incrementos), haciendo que apunten
+al siguiente carácter de la cadena.
+
+\consejo{Normalmente el uso de la aritmética de punteros se centra en
+operaciones sencillas de incremento o decremento.  Operaciones más
+complejas son potencialmente peligrosas, además operaciones como la
+multiplicación o división de dos apuntadores no estan permitidas lo
+cual es bastante lógico debido a la mínima utilidad práctica de estos
+operadores en punteros. A la hora de programar se debe recordar que
+un mal uso de la aritmética de punteros puede dejar poco portable 
+nuestro código.}
+

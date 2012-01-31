@@ -1,0 +1,55 @@
+%% SECCIÓN: PASO POR REFERENCIA vs PASO POR VALOR
+
+\newpage
+
+\section{Paso por referencia vs. paso por valor}
+
+\label{valor_vs_referencia}
+
+\subsection{¿Qué es el paso por referencia?}
+
+A la hora de pasar una variable como argumento a una función, el paso
+por referencia consiste en entregar como argumento un puntero a la
+variable, y no el contenido de la variable.
+
+\subsection{¿Para qué necesito el paso por referencia?}
+
+Si tratamos de modificar los valores de los argumentos de una función, 
+estos cambios no serán vistos desde fuera de la misma. Esto es debido
+a que los argumentos de la función son copias de las variables reales y
+ son almacenadas como variables locales a dicha función, desapareciendo 
+por tanto al regresar a la llamante. Se incluye un ejemplo a continuación:
+
+\ejemplo{punteros/referencia_valor/no_mod_args.c}
+
+Si compilamos y ejecutamos el código anterior, obtenemos el 
+siguiente resultado:
+\begin{verbatim}
+Variable var1 = 1
+Variable var1 = 1
+\end{verbatim}
+
+Como era de esperar, no se ha modificado el valor de la variable \texttt{var1}
+fuera de la función.
+
+Por esto, si queremos modificar el valor de un argumento en una función,
+debemos pasar este parámetro \textit{por referencia}, como se muestra
+en el siguiente ejemplo:
+
+\ejemplo{punteros/referencia_valor/mod_args.c}
+
+Como se puede comprobar, la salida de este programa es correcta:
+\begin{verbatim}
+Variable var1 = 1
+Variable var1 = 2
+\end{verbatim}
+
+Si en una función quisiéramos modificar un parámetro que fuera un puntero, 
+sería necesario pasar como argumento la dirección del mismo, es decir, 
+\textit{doble indirección}. Y así sucesivamente si el argumento fuera 
+doble puntero, triple puntero, etc. \\
+
+También es muy aconsejable el paso por referencia en el caso en que una función
+reciba como argumento una gran estructura de datos (arrays, matrices, ...),
+puesto que el paso por valor implicaría una copia completa de la estructura
+en el espacio de memoria de la función.

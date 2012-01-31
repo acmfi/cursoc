@@ -1,0 +1,380 @@
+% seccion Llamadas al sistema: POSIX
+\section{Llamadas al sistema: POSIX}
+
+\subsection {¿Qué es POSIX?}
+\label{posix}
+
+POSIX\footnote{Portable Operating System Interface} define un estándar
+de llamadas al sistema operativo. La librería estándar de C define
+unas funciones que deben estar en cualquier entorno de desarrollo de
+C. POSIX Define un estándar IEEE de funciones que requieren ``ayuda''
+del sistema operativo. En la siguiente sección mostramos algunas de
+ellas.
+
+\subsection{Llamadas POSIX para gestión de procesos}
+
+\subsubsection{getpid}
+
+\verb+pid_t getpid(void);+
+
+\begin{flushleft}
+Función que devuelve el identificador del proceso.
+\end{flushleft}
+
+\subsubsection{getuid}
+
+\verb+uid_t getuid(void);+
+
+\begin{flushleft}
+Función que devuelve el identificador de usuario real.
+\end{flushleft}
+
+\subsubsection{getgid}
+
+\verb+gid_t getgid(void);+
+
+\begin{flushleft}
+Función que devuelve el identificador de grupo real.
+\end{flushleft}
+
+\subsubsection{fork}
+
+\verb+pid_t fork();+
+
+\begin{flushleft}
+Función que crea un proceso hijo. Devuelve 0 al proceso hijo y el pid
+del hijo al proceso padre. El proceso hijo creado es una copia exacta del padre,
+excepto que recibe un valor diferente de la llamada fork, 0 en el hijo, el pid
+del hijo en el padre. Devuelve un valor -1 en caso de no pod crearse el proceso
+hijo.
+
+\ejemplo{avanzados/fork.c}
+\end{flushleft}
+
+\subsubsection{execvp}
+
+\verb+int execvp(const char *fichero, const char *argv[]);+\\
+
+\begin{flushleft}
+\texttt{execvp} es en realidad solo una función de la familia de funciones
+\texttt{exec}. Existen
+las funciónes \texttt{execl}, \texttt{execlp}, \texttt{execle}, \texttt{execv} y
+\texttt{execvp}, pero la más sencilla y útil es
+\texttt{execvp}.
+El primer parámetro, \texttt{*fichero}, es un puntero que apunta a la ruta del programa
+que queremos ejecutar, el segundo es un array de punteros a char que contiene
+los parámetros que queremos pasar a dicho programa (como si lo hicieramos desde
+la linea de comandos), siendo el primer parámetro el nombre del mismo programa,
+y el último NULL, con lo que decimos que no quedan más parámetros.\\
+\end{flushleft}
+
+Estas funciones lo que hacen en realidad es cambiar completamente el programa que la
+ejecuta, el cual solo conserva su pid y su tabla de ficheros abiertos. Por lo
+tanto, si quisieramos que un programa nuestro ejecute un programa externo (un ls
+por ejemplo), podríamos crear un proceso hijo con \texttt{fork()} y hacer que el proceso hijo
+ejecute un \texttt{exec}, convirtiendose así en otro programa.
+
+\nota{Como \texttt{exec} reemplaza el código del programa que lo ejecuta,
+\texttt{exec} nunca retorna, por
+lo cual cualquier código siguiente a la llamada \texttt{exec} no ejecutara, a no ser que
+la llamada \texttt{exec} falle.}
+
+Veamos un ejemplo:
+
+\ejemplo{avanzados/execvp.c}
+\subsubsection{wait}
+
+\verb+pid_t wait(int *status);+
+
+\begin{flushleft}
+Función que permite a un proceso padre esperar hasta que termine un
+proceso hijo cualquiera. Devuelve el identificador del proceso hijo y
+el estado de información del mismo.
+\end{flushleft}
+
+\subsubsection{waitpid}
+
+\verb+pid_t waitpid(pid_t pid, int *status, int options);+
+
+\begin{flushleft}
+Función que espera hasta termina el proceso pid.
+\end{flushleft}
+
+\subsubsection{exit}
+
+\verb+void exit(int status);+
+
+\begin{flushleft}
+Función que finaliza la ejecución de un proceso indicando el estado de
+terminación del mismo.
+
+\ejemplo{avanzados/exit.c} 
+\end{flushleft}
+
+\subsubsection{kill}
+
+\verb+int kill(pid_t pid, int sig);+
+
+\begin{flushleft}
+Función que envía al proceso pid la señal sig.
+\end{flushleft}
+
+\subsubsection{pause}
+
+\verb+int pause(void);+
+
+\begin{flushleft}
+Función que bloquea al proceso hasta la recepción de una señal.
+\end{flushleft}
+
+\subsubsection{sleep}
+
+\verb+int sleep(unsigned int seconds);+
+
+\begin{flushleft}
+Función que hace que el proceso despierte cuando ha transcurrido el
+tiempo establecido o cuando se recibe una señal.
+\end{flushleft}
+
+Un ejemplo que usa varias llamadas POSIX:
+
+\ejemplo{avanzados/posix.c}
+
+\subsection{Llamadas POSIX para la gestión de memoria}
+
+\subsubsection{brk}
+
+\verb+size = brk (addr)+;
+
+\begin{flushleft}
+Función que aumenta el tamaño de una región de memoria. Coloca, si es
+posible, el fin del heap en la dirección \verb+addr+. Supone que aumenta o
+disminuye el heap del segmento de datos.
+\end{flushleft}
+
+\subsubsection{dlopen}
+
+\verb+void *dlopen (const char *filename, int flag);+
+
+\begin{flushleft}
+Función que monta una biblioteca cuyo nombre se especifica en la
+cadena \verb+filename+. El parámetro flag puede tener los valores RTLD\_NOW o RTLD\_LAZY.
+\end{flushleft}
+
+\subsubsection{dlclose}
+
+\verb+int dlclose (void *handle);+
+
+\begin{flushleft}
+Función que elimina de memoria una biblioteca. Solamente la elimina
+cuando no queda ningún proceso usando la biblioteca.
+\end{flushleft}
+
+\subsection{Llamadas POSIX para la entrada/salida y el sistema de ficheros}
+
+\subsubsection{open}
+
+\verb+int open(char *name, int flags, mode_t mode);+
+
+\begin{flushleft}
+Función que abre un fichero, devolviendo un descriptor de fichero o -1
+si se produce un error. Las opciones de apertura son:
+\begin{description}
+\item[] O\_RDONLY: Sólo lectura.
+\item[] O\_WRONLY: Sólo escritura.
+\item[] O\_RDWR: Lectura y escritura.
+\item[] O\_APPEND: EL puntero de acceso se desplaza al final del fichero abierto.
+\item[] O\_CREAT: Si existe no tiene efecto. Si no existe lo crea.
+\item[] O\_TRUNC: Trunca si se abre para escritura.
+Los permisos del fichero vienen indicados por mode.
+\end{description}
+\end{flushleft}
+
+\subsubsection{creat}
+
+\verb+int creat(char *name, mode_t mode);+
+
+\begin{flushleft}
+Función que crea un fichero, devuelve un descriptor de fichero o -1 si
+se produce un error. El fichero se abre sólo para lectura. Si no existe se crea un fichero
+vacío.
+\end{flushleft}
+
+\subsubsection{read}
+
+\verb+ssize_t read(int fd, void *buf, size_t n_bytes);+
+
+\begin{flushleft}
+Función que lee de un fichero (descriptor de fichero), devuelve el
+número de bytes leidos o -1 si se produce un error. Transfiere n\_bytes
+como máximo. Puede leer menos datos de los
+solicitados si se rebasa el fin de fichero o se interrumpe por una
+señal. 
+
+\end{flushleft}
+
+\subsubsection{write}
+
+\verb+ssize_t write(int fd, void *buf, size_t n_bytes);+
+
+\begin{flushleft}
+Función que escribe en un fichero (descriptor de fichero), devuelve el
+número de bytes escritos o -1 si se produce un error. Transfiere n\_bytes
+como máximo. Puede escribir menos datos de los
+solicitados si se rebasa el tamaño máximo de un fichero o se
+interrumpe por una señal.
+\end{flushleft}
+
+\subsubsection{close}
+
+\verb+int close(int fd);+
+
+\begin{flushleft}
+Función que cierra un descriptor de fichero, devuelve 0 o -1 si se
+produce un error. El proceso pierde la asociación entre el descriptor y el fichero.
+\end{flushleft}
+
+\subsubsection{dup}
+
+\verb+int dup(int fd);+
+
+\begin{flushleft}
+Función que duplica un descriptor de fichero, devuelve un descriptor
+de fichero que comparte todas las propiedades del fd o -1 si se produce
+un error.
+\end{flushleft}
+
+\subsubsection{opendir}
+
+\verb+DIR *opendir(char *dirname);+
+
+\begin{flushleft}
+Función que abre un directorio, devuelve un puntero para utilizarse en
+\verb+readdir()+ o \verb+closedir()+. Si se produce un error devuelve
+NULL.
+\end{flushleft}
+
+\subsubsection{readdir}
+
+\verb+struct dirent *readdir(DIR *dirp);+
+
+\begin{flushleft}
+Función que realiza la lectura de entradas de un directorio, devuelve
+un puntero a un objeto del tipo struct dirent que representa una
+entrada de directorio o NULL si se produce un error.
+\end{flushleft}
+
+\subsubsection{closedir}
+
+\verb+int closedir(DIR *dirp);+
+
+\begin{flushleft}
+Función que cierra un directorio, devuelve un cero o un -1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{mkdir}
+
+\verb+int mkdir(char *name, mode_t mode);+
+
+\begin{flushleft}
+Función que crea un directorio de nombre name, devuelve un cero o un
+-1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{rmdir}
+
+\verb+int rmdir(char *name);+
+
+\begin{flushleft}
+Función que borra un directorio de nombre name si está vacío. Si no
+está vacío no se borra. Devuelve un cero o un -1 si se produce un
+error.
+\end{flushleft}
+
+\subsubsection{link}
+
+\verb+int link(char *existing, char *new);+
+
+\begin{flushleft}
+Función que crea una entrada de directorio. Crea un nuevo enlace
+físico para un fichero existente. Devuelve cero o un -1 si se produce
+un error. \verb+existing+ no debe ser el nombre de un directorio salvo que se
+tenga privilegio suficiente y la implementación soporte el enlace de
+directorios.
+\end{flushleft}
+
+\subsubsection{symlink}
+
+\verb+int symlink(char *oldpath, char *newpath));+
+
+\begin{flushleft}
+Función que crea una entrada de directorio. Crea un nuevo enlace
+simbólico para un fichero existente. Devuelve cero o un -1 si se
+produce un error.
+\end{flushleft}
+
+\subsubsection{unlink}
+
+\verb+int unlink(char *name);+
+
+\begin{flushleft}
+Función que elimina la entrada de directorio name. Devuelve cero o un
+-1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{chdir}
+
+\verb+int chdir(char *name);+
+
+\begin{flushleft}
+Función que modifica el directorio actual, aquel a partir del cual se
+forman los nombres relativos. Devuelve cero o un -1 si se produce un
+error.
+\end{flushleft}
+
+\subsubsection{rename}
+
+\verb+int rename(char *old, char *new);+
+
+\begin{flushleft}
+Función que cambia el nombre del fichero \verb+old+ por \verb+new+, devuelve cero o
+un -1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{umask}
+
+\verb+mode_t umask(mode_t cmask);+
+
+\begin{flushleft}
+Función que asigna la máscara de creación de ficheros del proceso que
+la invoca. Devuelve un cero o un -1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{chmod}
+
+\verb+int chmod(char *name, mode_t mode);+
+
+\begin{flushleft}
+Función que modifica los bits de permiso y los bits SETUID y SETGID
+del fichero. Devuelve un cero o un -1 si se produce un error. Sólo
+el propietario del fichero puede cambiar estos bits.
+\end{flushleft}
+
+\subsubsection{chown}
+
+\verb+int chown(char *name, uid_t owner, gid_t group);+
+
+\begin{flushleft}
+Función que modifica el identificador de usuario y del grupo de un
+fichero. Devuelve un cero o un -1 si se produce un error.
+\end{flushleft}
+
+\subsubsection{utime}
+
+\verb+int utime(char *name, struct utimbuf *times);+
+
+\begin{flushleft}
+Función que cambia las fechas de último acceso y última modificación
+según los valores de la estructura \verb+struct+ \verb+utimbuf+. Devuelve cero o un
+-1 si se produce un error.
+\end{flushleft}

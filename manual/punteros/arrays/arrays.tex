@@ -1,0 +1,168 @@
+%% SECCIÓN: ARRAYS Y PUNTEROS  (autor: ana)
+\section{Arrays y punteros}
+\label{arrays_punteros}
+
+\begin{flushleft}
+Hasta ahora para nosotros un array era un conjunto ordenado de
+elementos del mismo tipo.
+\end{flushleft}
+
+\subsection{Repaso}
+
+\begin{flushleft}
+La sintaxis en C para declarar un array es:
+\end{flushleft}
+
+\begin{verbatim}
+tipo_elementos nombre_array[numero_elementos];
+\end{verbatim}
+
+\begin{flushleft}
+La sintaxis para acceder a sus elementos es:
+\end{flushleft}
+
+\begin{verbatim}
+nombre_array[indice]
+\end{verbatim}
+
+\begin{flushleft}
+Ejemplo: un array de cinco elementos que contenga números primos sería así:
+\end{flushleft}
+
+\begin{verbatim}
+int numeros_primos[5];
+
+numeros_primos[0] = 2;
+numeros_primos[1] = 3;
+numeros_primos[2] = 5;
+numeros_primos[3] = 7;
+numeros_primos[4] = 11;
+\end{verbatim}
+
+\subsection{Introducción}
+
+Ahora vamos a ver qué es para el compilador un array, y así
+aprenderemos a usarlos de manera más eficiente. Un array es un
+conjunto de elementos del mismo tipo. Para que sea conjunto
+``ordenado'', lo que el compilador hace es juntar todos los elementos
+en la misma zona de memoria. Almacena la dirección inicial en nuestra
+variable para saber dónde está el primer elemento, que correspondería
+al índice ``0''. A partir de ahí, al incrementar la dirección de
+memoria en el tamaño de los elementos, va accediento a array[1],
+array[2], etc.
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=65mm]{punteros/images/arrays_1.eps}
+\caption{Un array de números primos}
+\end{centering}
+\end{figure}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=115mm]{punteros/images/arrays_2.eps}
+\caption{Avanzando sobre un array}
+\end{centering}
+\end{figure}
+
+Así podemos deducir la siguiente fórmula: 
+\textit{dirección\_elemento$=$dirección\_inicial$+($índice$*$tamaño\_elementos$)$}.\\
+
+Esta fórmula es la que aplica el compilador para calcular la dirección
+del elemento al que nos referimos al hacer un acceso al array del tipo
+\textit{array[indice]}, como por ejemplo \textit{numeros\_primos[3]}.
+Claramente, se dibuja la idea del puntero en el concepto de
+array:\\
+
+\definicion{Variable tipo array}{Un puntero al primer elemento del
+array.}
+
+¿Cuál es la ventaja de trabajar de punteros, con los posibles
+problemas que eso trae, en vez de con arrays sin más?  La respuesta
+surge enseguida: un array tiene un tamaño fijo desde su
+declaración. Sin embargo, trabajando con punteros, nuestro array podrá
+tener el tamaño que nosotros queramos durante el programa, y podemos
+incluso variarlo en función de otros datos del programa.\\
+
+Por supuesto, esta ventaja tiene un precio (aunque muy bajo) que no
+debemos olvidar. Debemos apuntar en algún sitio (variable, constante)
+cuánto espacio hemos pedido y en otro cuánto de ese espacio hemos
+aprovechado. Como al programar no conoceremos el espacio aprovechado
+del array, deberemos hacer una de estas dos cosas:
+
+\begin{itemize}
+\item apuntar en otra variable el tamaño ocupado del array.  
+\item hacer que el último elemento del array sea diferente, un dato
+  que no nos puedan introducir, por ejemplo, un número negativo o una letra cuando hablamos
+  de números de teléfono. 
+\end{itemize}
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=170mm]{punteros/images/arrays_3.eps}
+\caption{Más sobre arrays}
+\end{centering}
+\end{figure}
+
+\paragraph{Ejemplo}
+Queremos que el usuario introduzca varios números de teléfono y los
+vamos a almacenar en el array \textit{telefonos}. No sabemos cuántos
+números va a introducir el usuario. Si lo tuviéramos que implementar
+con un array definido desde su
+declaración, tendríamos que poner un tope a los números de teléfono
+que se pueden introducir, por ejemplo 10:
+
+\begin{verbatim}
+int i;
+int telefonos[10];
+
+i=0;
+while (usuario_introduce && (i<10))
+{
+  telefonos[i] = numero_introducido;
+  i++;
+}
+numeros_introducidos = i;
+\end{verbatim}
+
+Sin embargo, trabajando con punteros podemos preguntar al usuario
+cuántos números quiere introducir:
+
+\begin{verbatim}
+int i, tamano;
+int *telefonos; // o bien: int telefonos[]
+
+telefonos = NULL;
+/* es muy recomendable inicializar el valor de un puntero a NULL.
+ * Así, si se nos olvida pedir memoria para él, el programa fallará siempre.
+ * Por el contrario, si no lo inicializamos, el programa fallará 
+ * algunas veces sí y otras no. */
+
+tamano = preguntar_tamano();
+telefonos = malloc (tamano);
+
+for (i=0;i<tamano;i++)
+  telefonos[i] = numero_introducido;
+\end{verbatim}
+
+O también variar el tamaño del array de forma dinámica:
+
+\begin{verbatim}
+
+int i, tamano, nuevo_tamano;
+int *telefonos; // o bien: int telefonos[]
+
+telefonos = NULL;
+i=0;
+while (usuario_introduce)
+{
+  nuevo_tamano = sizeof (int) * (i+1);
+  telefonos = realloc (telefonos,nuevo_tamano);
+  telefonos[i] = numero_introducido;
+  i++;
+}
+tamano=i;
+\end{verbatim}
+
+\nota{Si el tamaño del array es ``X'', los índices (que empiezan por cero) irán de ``0'' a ``X-1''.}
+

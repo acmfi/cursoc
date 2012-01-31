@@ -1,0 +1,109 @@
+% seccion Constantes
+\section{Constantes}
+
+Las constantes son valores fijos\footnote{podríamos decir que son ``variables constantes" 
+lo que es un oxímoron, es decir, una contradicción, igual que ``inteligencia militar"\ldots}
+ que no pueden ser modificados por el programa. Pueden ser de cualquier tipo de datos básico 
+(punteros incluidos). Para marcar que queremos que una variable sea constante utilizamos 
+la palabra reservada \verb+const+ tal que:\\
+\begin{verbatim}
+const int dummy = 321;         /* declaramos que dummy vale y valdrá siempre 321 */
+\end{verbatim} 
+
+No tiene demasiado sentido declarar una variable de tipo const sin darle valor inicial, 
+pero algunos compiladores permiten hacerlo.
+
+\nota{Con algunos compiladores \footnote{gcc, el compilador estándar de Linux, 
+sin ir mas lejos}, si se intenta cambiar de valor una constante se genera un ``warning''  al compilar, pero se cambia el valor. 
+C, como lenguaje para programadores que es, asume que sabes lo que estás haciendo 
+y por eso continúa. En cualquier caso, como la constante ocupa espacio en memoria, 
+siempre se podrá modificar, si \emph{realmente} se quiere ser un chico malo, 
+es cuestión de acceder a ella directamente a base de punteros de memoria...
+}
+
+\subsection{Constantes numéricas}
+
+Aparte de consntantes enteras tipo \verb+234+ y en coma flotante de la forma \verb-10.4-, a veces, 
+sobre todo al trabajar a bajo nivel, resulta más cómodo poder introducir la constante en base 8 (octal) 
+o 16 (hexadecimal) que en base 10. Dado que es corriente usar estos sistemas de numeración, 
+C permite especificar constantes enteras en hexadecimal u octal.
+Una constante hexadecimal empieza por  \verb-0x- seguido del número esa base.
+Iguálmente una constante octal comienza por \verb-0-:
+
+\begin{verbatim}
+const int hex = 0x80A; /* 2058 en decimal */
+const int oct = 012;  /*  10 en decimal */
+\end{verbatim}
+
+\subsection{Constantes de caracteres}
+
+Las cadenas de caracteres se representan encerrando la cadena entre comillas dobles (\verb+"hola caracola"+ sería un ejemplo). Hay ciertos caracteres que no se puede (o no es cómodo)  introducir de esta forma, 
+como son los caracteres de control: tabulador, retorno de carro, etc... Para introducirlos hay que 
+usar unos códigos que consisten en una barra invertida y una letra, estos son los principales:\\
+
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Código} & \textbf{Significado} \\ 
+\hline  
+        \verb-\n- & Retorno de carro  \\ 
+\verb+\t+ & Tabulador\\ 
+\verb+\"+ & Comillas dobles \\ 
+\verb+\'+ & Comillas simples \\ 
+\verb+\\ +& Barra invertida \\ 
+\hline
+\end{tabular} 
+\caption{Constantes de Cadena}
+\end{center}
+\end{table}
+\begin{flushleft}
+Por ejemplo, este programa escribe "hola mundo" desplazado un tabulador a la izquierda y luego salta de línea:\\
+\end{flushleft}
+
+
+\ejemplo{sintaxis/ejemplo_cadenas.c}
+
+
+\subsection{Constantes enumeradas}
+
+Las constantes enumeradas permiten definir una lista de constantes representadas por identificadores.
+Estas constantes son, realmente, enteros. Si no se especifica una correspondencia 
+entre nombre y número el compilador se encarga de asignarles números correlativos 
+(empezando por 0). Se pueden usar como enteros que son, pero la idea es usarlos 
+en comparaciones, haciendo así el código más legible.\\
+
+Para definirlas se usa la palabra reservada \verb+enum+ tal que:
+\begin{verbatim}
+enum color{rojo, amarillo, morado};
+enum bool{false=0, true=1};
+\end{verbatim} 
+\consejo{Definir el tipo \texttt{bool} ayuda a conseguir código más claro\ldots}
+
+\begin{flushleft}
+A partir de entonces se puede poner por ejemplo:
+\end{flushleft}
+
+\begin{verbatim}if(color == rojo)...\end{verbatim}
+en lugar de tener que poner:
+\begin{verbatim}if(color == 0)...\end{verbatim}
+(¿es o no es más claro?)
+\subsection{Uso del preprocesador para definir constantes simbólicas}
+
+Con el preprocesador, del que hablaremos más adelante, también se pueden definir constantes, 
+aunque en este caso son realmente \textit{alias}. Al compilar se sustituye tal cual un valor por otro, 
+tenga o no sentido, y no se reserva memoria para el valor. Por ejemplo, para definir que 
+la longitud de algo es 10 pondríamos:
+
+\begin{verbatim}#define LONGITUD 10\end{verbatim}\\
+
+\nota{Ojo, no ponemos punto y coma al final, ni signo de equivalencia. 
+Hemos \emph{definido} un \emph alias para 10, que es ``LONGITUD".
+Por costumbre se suelen poner las constantes así definidas en mayúsculas, 
+para no confundirlas con constantes normales.}
+
+Ejemplo de uso de const:
+
+\ejemplo{sintaxis/ejemplo_modificadores_1.c}
+
+%\newpage

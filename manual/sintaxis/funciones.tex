@@ -1,0 +1,79 @@
+% Seccion Funciones y subrutinas
+\section{Funciones y subrutinas}
+
+Las funciones en C desempeñan el papel de las subrutinas o
+procedimientos en otros lenguajes, esto es, permiten agrupar una serie
+de operaciones de tal manera que se puedan utilizar más tarde sin
+tener que preocuparnos por cómo están implementadas, simplemente
+sabiendo lo que harán. \\
+
+El uso de funciones es una práctica común y recomendable ya que
+permite modularizar nuestro código, simplificando así el desarrollo y
+la depuración del mismo. Para utilizar funciones en un programa es
+necesario declararlas previamente al igual que las variables (en este
+caso indicaremos los argumentos de entrada y su tipo, y el tipo del
+valor que devolverá) y definir las operaciones que contiene.\\
+
+\begin{flushleft}
+En C la declaración de una función tiene la siguiente estructura:\\
+\end{flushleft}
+
+\begin{verbatim}
+tipo_devuelto nombre_funcion (argumentos);
+\end{verbatim} 
+
+\begin{flushleft}
+Y su definición:
+\end{flushleft}
+
+\begin{verbatim}
+tipo_devuelto nombre_funcion (argumentos)
+{
+    sentencias;
+}
+\end{verbatim}
+
+
+\nota{A la hora de definir una función que \textbf{no} acepte argumentos escribiremos
+\texttt{void} en vez de los argumentos.}
+
+\begin{flushleft}
+Pongamos un ejemplo, un programa en el que queremos incluir una función que devuelva el factorial de un número:
+\end{flushleft}
+
+
+\ejemplo{sintaxis/ejemplo_funciones1.c}
+
+
+\newpage
+La declaración
+ 
+\begin{verbatim}
+  int factorial(int a);
+\end{verbatim}
+
+debe coincidir con la definición de la función factorial que aparece
+posteriormente, si no coincide obtendremos un error en la compilación del
+programa. El valor que calcula la función \verb+factorial()+ se devuelve por
+medio de la sentencia return, ésta puede estar seguida de cualquier
+expresión o aparecer sola. En tal caso la función no devuelve ningún
+valor y al llegar a ese punto simplemente se devuelve el control a la
+función desde la que se invocó.
+
+\subsection{Paso de parámetros a funciones. Llamadas por valor}
+
+
+Es importante destacar que en C todos los argumentos de una función se pasan por valor. Esto es, las funciones trabajan sobre copias privadas y temporales de las variables que se le han pasado como argumentos, y no directamente sobre ellas. Lo que significa que no podemos modificar directamente desde una función las variables de la función que la ha llamado.\\
+
+Veamos esto con un ejemplo:
+
+\ejemplo{sintaxis/ejemplo_funciones2.c}
+
+
+Como podemos ver, en este caso no utilizamos una variable temporal en la función factorial para ir
+ calculándo la solución, sino que vamos disminuyendo el argumento n de entrada. Esto no influye
+ en la variable a (que es la que se paso como argumento a la función factorial) ya que al pasarse los parámetros por valor es una copia de la variable a y no a directamente la que maneja la función factorial como argumento n.\\
+
+Si quisieramos modificar una variable llamando a una función tendríamos que pasarle como argumento a dicha función la dirección en memoria de esa variable (un puntero a la variable). Esto lo veremos en la sección \ref{valor_vs_referencia}. 
+
+%\newpage

@@ -1,0 +1,150 @@
+%% SECCIÓN: ERRORES CON PUNTEROS
+
+\section{Errores con punteros}
+
+\subsection{Comparación de punteros a cadenas}
+\label{error_confundir_strings_punteros}
+
+Un error que ocurre frecuentemente al empezar a programar en C 
+es intentar comparar dos cadenas de caracteres mediante sus punteros.
+Veámoslo en el siguiente ejemplo:
+
+\ejemplo{punteros/errores/strings.c}
+
+En la ejecución de este programa, tendríamos la siguiente asignación
+de memoria:
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[height=9cm]{punteros/errores/strings.eps}
+    \caption{Colocación de strings en memoria}
+  \end{center}
+\end{figure}
+
+Al observar el diagrama, se entiende más facilmente que el código anterior 
+no es correcto, esto es, únicamente compara el valor de las variables
+\texttt{string1} y \texttt{string2}, que son las direcciones de memoria
+de las cadenas de caracteres, y no las cadenas en sí.\\
+
+Por este motivo, si queremos comparar dos cadenas de caracteres correctamente,
+deberemos usar las funciones de la librería estándar de C que operan sobre strings.
+En concreto, la función a utilizar es \texttt{strcmp}\footnote{Explicada más
+ detalladamente en la sección \ref{strcmp}}, que compara dos cadenas 
+carácter a carácter.\\
+
+De esta manera, el código corregido quedaría:
+
+\ejemplo{punteros/errores/strings_ok.c}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Punteros ``a Roma"\ (\textit{memory leaks})}
+\label{punteros_roma}
+
+Observemos lo que ocurre en el siguiente ejemplo:
+\ejemplo{punteros/errores/roma.c}
+
+Al ejecutar el programa anterior, obtendríamos el siguiente
+diagrama:
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=14cm]{punteros/errores/roma.eps}
+    \caption{Punteros a roma}
+  \end{center}
+\end{figure}
+
+Como se puede apreciar, en la finalización del programa, ha quedado
+una zona de memoria (\verb+0x45235333+) ocupada, que no esta apuntada
+por ninguna variable. Esto implica no poder acceder al contenido
+de dicha zona y por tanto, no poder liberarla, con el consiguiente
+gasto innecesario de memoria.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Doble liberación}
+\label{error_doble_liberacion}
+Cuando se programa utilizando memoria dinámica, es necesario
+liberar toda la memoria solicitada, pero únicamente 
+es necesario realizarlo una vez.
+En ocasiones, se intenta liberar varias veces la misma zona de
+memoria, consiguiendo un \texttt{Segmentation Fault}, pues
+esta memoria ya estaba marcada como libre. Se puede comprobar con
+un ejemplo muy simple como el siguiente:
+\ejemplo{punteros/errores/mem.c}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Usar $.$ en lugar de \texttt{->}}
+Al utilizar estructuras apuntadas por punteros, hemos de tener
+precaución y utilizar correctamente los operadores $.$ y \verb+->+
+Vemos un mal uso de ellos en el siguiente ejemplo:
+
+\ejemplo{punteros/errores/structs1.c}
+
+%Y como se debería utilizar correctamente:
+Y cual es su uso correcto:
+
+\ejemplo{punteros/errores/structs2.c}
+
+
+\label{error_considerar_puntero}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Operar con los punteros en lugar de con los contenidos}
+En los programas que utilizan punteros (memoria dinámica), es imprescindible
+diferenciar perfectamente entre el puntero en sí y su contenido,
+pues en otro caso, realizaremos algunas operaciones sobre el puntero
+cuando en realidad queremos hacerlas sobre el contenido
+\footnote{Un caso de este tipo es comentado más en detalle en
+la sección \ref{error_confundir_strings_punteros}}. Veamos algunos errores más frecuentes:
+
+\ejemplo{punteros/errores/contenido1.c}
+
+Ahora la versión correcta:
+
+\ejemplo{punteros/errores/contenido2.c}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Finalización de cadenas}
+
+En el lenguaje C, las cadenas de caracteres deben tener un
+carácter de finalización, \verb+\0+. Cuando asignamos
+o inicializamos una variable con una cadena entre comillas dobles, el 
+carácter de finalización es puesto automáticamente por
+el compilador, por ejemplo:
+
+\begin{verbatim}
+char * string1 = "Cadena";
+\end{verbatim}
+
+El código anterior inicializará la variable de la siguiente manera:
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[height=7.5cm]{punteros/errores/cadena.eps}
+    \caption{Carácter de finalización}
+  \end{center}
+\end{figure}
+
+De esta forma, en tiempo de ejecución, al operar sobre una cadena
+se busca el carácter \verb+\0+, que indique el fin
+de la misma. Es por esto que si se olvida poner dicho indicador 
+cuando se está rellenando una cadena carácter a carácter 
+(en un bucle, por ejemplo), al intentar acceder a ella,
+el programa seguirá leyendo la información que exista a continuación
+de la cadena hasta que muy probablemente intente acceder a una zona
+en la que no tenga permisos y termine con el típico \texttt{Segmentation
+Fault}.
+

@@ -1,0 +1,515 @@
+% Subseccion Operadores
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Operadores}
+\definicion {¿qué es un operador?} 
+{
+        Un  operador es  un símbolo  (+, -, *, /, etc) que tiene una función
+        predefinida (suma, resta, multiplicación, etc) y que recibe sus
+        argumentos de manera infija, en el caso de tener 2 argumentos
+        ($a$ $operador$ $b$), o de manera prefija o postfija, en el caso de tener uno
+        solo ($operador$ $a$ , o bien, $a$ $operador$).
+}
+
+En C existen una gran variedad de operadores, que se pueden agrupar de la
+siguiente manera:
+\begin{itemize}
+        \item Operadores aritméticos
+        \item Operadores relacionales
+        \item Operadores lógicos
+        \item Operadores a nivel de bit (bitwise operators)
+        \item Operadores especiales
+\end{itemize}
+
+En el siguiente apartado veremos cuáles son estos operadores, sus funciones, y
+por último la precedencia u orden de evaluación entre éstos.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operadores aritméticos}
+Los operadores aritméticos nos permiten, básicamente, hacer cualquier operación
+aritmética, que necesitemos (ejemplo: suma, resta, multiplicación, etc).
+En la siguiente tabla se muestran los operadores de los que disponemos en C y su
+función asociada. \\
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline 
+\emph{Operador} & \emph{Acción} & \emph{Ejemplo}\\
+\hline
+$-$   & Resta          & x = 5 $-$ 3; // x vale 2   \\
+$+$    & Suma           & x = 2 $+$ 3; // x vale 5   \\
+$*$    & Multiplicación & x = 2 $*$ 3; // x vale 6   \\
+$/$    & División       & x = 6 $/$ 2; // x vale 3   \\
+$\%$   & Módulo         & x = 5 \% 2; // x vale 1  \\
+$--$ & Decremento     & x = 1; x$--$; // x vale 0  \\
+$++$   & Incremento     & x = 1; x$++$; // x vale 2  \\
+\hline
+\end{tabular}
+\caption{Operadores aritméticos}
+\end{center}
+\end{table}
+
+\paragraph{Incrementos y Decrementos}
+Como hemos visto los operadores de incremento y decremento, añaden o restan una
+unidad a su operando. Observar, que estos operadores modifican el valor del
+operando:
+\begin{verbatim}
+        x = 4;
+        y = x++;
+        /* Después de esta instrucción x valdrá 5 e  */
+        /* y valdrá 4 (como veremos a continuación). */
+\end{verbatim}
+
+Los incrementos y decrementos, son operadores muy útiles, y en muchas ocasiones
+es bastante más clara su utilización que hacer una simple suma o resta:\\
+\begin{verbatim}
+        /* Un pequeño for */
+        int i,j;
+
+        for ( i = 0; i < 10; i = i + 1 )
+                /* no hace nada */;
+
+        for ( j = 0; j < 10; j++ ) 
+                /* hace lo mismo que el anterior: nada */;
+
+        /* Cual es más clara? */
+\end{verbatim}
+
+\noindent
+Sin embargo es necesario prestar atención a lo siguiente:\\
+Los incrementos y decrementos se pueden poner de forma prefija y postfija; y
+según esto pueden significar:
+\paragraph{Forma prefija: preincremento y predecremento}
+        Cuando un operador de incremento o decremento precede a su operando, se
+        llevará a cabo la operación de incremento o de decremento antes de
+        utilizar el valor del operando. Veámoslo con un ejemplo:
+
+\begin{verbatim}
+        int x,y;
+
+        x = 2004;
+        y = ++x;
+        /* x e y valen 2005. */ 
+\end{verbatim}
+
+
+\paragraph{Forma postfija: postincremento y postdecremento}
+        En el caso de los postincrementos y postdecrementos pasa lo contrario:
+        se utilizará el valor actual del operando y luego se efectuará la
+        operación de incremento o decremento.
+
+\begin{verbatim}
+        int x,y
+        
+        x = 2004;
+        y = x++;
+        /* y vale 2004 y x vale 2005 */
+\end{verbatim} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operadores relacionales} 
+Al igual que en matemáticas, estos operadores nos permitirán evaluar las
+relaciones (igualdad, mayor, menor, etc) entre un par de operandos (en
+principio, pensemos en números). Los operadores relacionales de los que
+disponemos en C son:\\
+
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline 
+\emph{Operador} & \emph{Acción} \\
+\hline
+\verb+>+    & Mayor que           \\
+\verb+>=+   & Mayor o igual que   \\
+\verb+<+    & Menor que           \\
+\verb+<=+   & Menor o igual que   \\
+\verb+==+   & Igual               \\ %TODO:PONER FOOTNOTE: Hay que tener mucho cuidado en no confundir la igualdad ``=='' con el símbolo de asignacion ``=''; en muchos casos puede ser fuente casi ilocalizable de errores que dan verdaderos dolores de cabeza.
+\verb+!=+   & Distinto            \\
+\hline
+\end{tabular}
+\caption{Operadores relacionales.}
+\end{center}
+\end{table}
+
+El resultado de cualquier evaluación de este tipo, es un valor ``cierto''
+(\emph{true}) o ``falso'' (\emph{false}). La mayoría de lenguajes tienen algún
+ tipo predefinido para representar estos valores (boolean, bool, etc);
+sin embargo en C, se utilizan valores enteros para representar esto: \\
+\begin{center}
+\begin{tabular}{|c|c|} 
+\hline
+falso  (false) & 0 \\
+\hline
+cierto (true)  & cualquier valor distinto de 0, aunque normalmente se usará el 1\\
+\hline
+\end{tabular}
+\end{center}
+
+Volviendo a los operadores relacionales, el  resultado de una evaluación será un
+valor entre 0 y 1, que indicará como hemos dicho, la falsedad o certeza de esa
+relación.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operadores lógicos}
+Como  operadores  lógicos designamos  a aquellos operadores que nos  permiten
+``conectar'' un par de propiedades (al igual que en lógica):
+\begin{verbatim}
+        numero = 2701; 
+        if ( EsPrimo(numero) && (numero > 1000) ){
+                /* Ejecutaremos este código si numero */
+                /* es primo y numero es mayor que 100 */
+        }
+\end{verbatim} 
+
+
+Los operadores lógicos de los que disponemos en C son los siguientes:\\
+
+
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline 
+\emph{Operador} & \emph{Acción} \\
+\hline
+\verb+&&+ & Conjunción (Y)      \\
+\verb+||+   & Disyunción (O)      \\
+\verb+!+    & Negación            \\
+\hline
+\end{tabular}
+\caption{Operadores lógicos.}
+\end{center}
+\end{table}
+
+Al igual que con la igualdad hay que tener especial cuidado con los operadores
+\&\& y $||$, ya que si ponemos sólamente un \& o un $|$ , nos estamos
+refiriendo a un ``and'' o un ``or'' a nivel de bit, por lo que el código puede
+que no haga lo que queremos (o que algunas veces lo haga y otras veces no).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operadores a nivel de bit (bitwise operators)}
+En determinadas  ocasiones nos puede interesar manipular datos a nivel de bit;
+por ejemplo activar o desactivar \emph{flags}. Un \emph{flag} es una  ``variable''
+que puede tomar 2 valores, por  lo que se suele
+representar con  un bit.  Debido a que  en C  (y en la  mayoría de  lenguajes de
+programación) no existen tipos predefinidos de un bit, lo que  se suele hacer es
+agrupar  varios \emph{flags}  en una  variable  de tipo  entero (``short  int'',
+``int''  o lo  que queramos).\\
+
+Para  acceder a  estos flags  o simplemente  para
+activarlos  es necesario  utilizar operadores  a nivel  de bit.  Veámoslo en  un
+ejemplo.\\
+
+La  llamada  al  sistema  ``\emph{open}''  (en  \emph{POSIX})  necesita  que  se
+le  especifique  que  hacer con  el  fichero  a  abrir:  crearlo si  no  existe,
+sobreescribirlo si existe, no sobreescribirlo, etc.
+\begin{verbatim}
+        int open(const char *path, int flags);
+        //Donde:
+        //   path  --> indica el path de donde se encuentra el fichero
+        //   flags --> indica lo que queremos hacer con el fichero ...
+        //
+        //Flags puede ser:
+        //   O_CREAT Si el fichero no existe, será creado.
+        //   O_EXCL Cuando se combina con O_CREAT, se considerará un 
+        //          error que el fichero ya exista.
+        //   O_TRUNC Si el fichero ya existe, será truncado.
+        //   O_APPEND El fichero se abrirá en modo de sólo-añadir.
+        //   O_NONBLOCK El fichero se abre en modo no bloqueante.
+        //   ...
+\end{verbatim} 
+
+Si queremos abrir  el fichero ``/tmp/tutorial\_c.txt'' en modo lectura  y que se
+pueda escribir al final del mismo pondremos:
+\begin{verbatim}
+        int fd;
+
+        fd = open ("/tmp/tutorial_c.txt", O_CREAT | O_APPEND );
+        // también lo podríamos hacer "a pelo":
+        //   open ("/tmp/tutorial_c.txt", 0x440)
+        
+        write(fd, "Hola mundo...\n", 14);
+
+        close (fd);
+\end{verbatim} 
+
+Aunque normalmente  no se suelen  utilizar, es  bueno conocer como  actúan estos
+operadores y de cuales disponemos.
+
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline 
+\emph{Operador} & \emph{Acción} \\
+\hline
+\&  & AND a nivel de bit. \\
+$|$   & OR  a nivel de bit. \\
+$\wedge$  & XOR a nivel de bit. \\ 
+$\tilde{\ }$   & Complemento.        \\
+$<<$  & Desplazamiento a la izquierda. \\
+$>>$  & Desplazamiento a la derecha.   \\
+\hline
+\end{tabular}
+\caption{Operadores a nivel de bit}
+\end{center}
+\end{table}
+
+\begin{flushleft}
+A continuación describiremos cada uno de estos operadores brevemente.
+\end{flushleft}
+
+
+\definicion{El operador AND (\&)}
+{
+El operador AND  compara dos bits; si los  dos son 1 el resultado es  1, en otro
+caso el resultado será 0. Ejemplo:
+}
+\begin{verbatim}
+        c1 = 0x45      --> 01000101
+        c2 = 0x71      --> 01110001
+        ---------------------------
+        c1 & c2 = 0x41 --> 01000001  
+\end{verbatim}
+
+\definicion{El operador OR ($|$)}
+{
+El operador OR compara dos bits; si cualquiera de los dos bits es 1, entonces el
+resultado es 1; en otro caso será 0. Ejemplo:
+}
+\begin{verbatim}
+        i1 = 0x47      --> 01000111
+        i2 = 0x53      --> 01010011
+        ---------------------------
+        i1 | i2 = 0x57 --> 01010111
+\end{verbatim}
+
+\definicion{El operador XOR ($\wedge$)}
+{
+El operador OR  exclusivo o XOR, dará  como resultado un 1 si  cualquiera de los
+dos operandos es 1, pero no los dos a la vez. Ejemplo:
+}
+\begin{verbatim}
+        i1 = 0x47      --> 01000111
+        i2 = 0x53      --> 01010011
+        ---------------------------
+        i1 ^ i2 = 0x14 --> 00010100
+\end{verbatim}
+
+\definicion{El operador de complemento ($\tilde{\ }$)}
+{
+Este operador devuelve como resultado el complemento a uno del operando:
+}
+\begin{verbatim}
+        c = 0x45  --> 01000101
+        ----------------------
+        ~c = 0xBA --> 10111010
+\end{verbatim}
+
+\definicion{Los operadores de desplazamiento a nivel de bit ($<<$ y $>>$)}
+{
+Desplazan a la  izquierda o a la  derecha un número especificado de  bits. En un
+desplazamiento  a la  izquierda los  bits que  sobran por  el lado  izquierdo se
+descartan y  se rellenan los nuevos  espacios con ceros. De  manera análoga pasa
+con los desplazamientos a la derecha. Veamos un ejemplo:
+}
+\begin{center}
+\begin{tabular}{c|c|c}
+       & c = 0x1C & 00011100 \\
+\hline
+c $<<$ 1 & c = 0x38 & 00111000 \\
+c $>>$ 2 & c = 0x07 & 00000111 \\
+\hline
+\end{tabular}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Operadores especiales}
+Por último describiremos los operadores que nos faltan:
+\begin{itemize}
+\item El operador de asignación
+\item El operador ternario ?
+\item Los operadores \& y * (unarios)
+\item El operador sizeof
+\item El operador cast
+\item El operador coma ``,''
+\item Los operadores ``.'' y ``-$>$''
+\item El operador \verb+(  )+
+\item El operador \verb+[  ]+
+\end{itemize}
+%TODO: FOOTNOTE: algunos de estos operadores están descritos en otros apartados de este manual
+
+\paragraph{El operador de asignación}
+\label{operador_asignacion}
+En otros lenguajes de programación se considera la asignación como una sentencia
+especial, en C, esto no es así. La asignación es un operador más. Este operador,
+tiene como lvalue (left value, el valor a la izquierda del operador) un variable
+y como rvalue  una expresión válida. Puesto  que es un operador, el  todo es una
+expresión:\\
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{im/sintaxis/asignacion.eps} 
+\end{center}
+\end{figure}
+
+Es por ello que podemos hacer asignaciones múltiples:
+\begin{verbatim}
+        int x,y,z;
+
+        x = y = z = 0;
+\end{verbatim}
+
+Existen  una  serie  de  casos  particulares   de  la  asignación,  que  son  las
+asignaciones  compuestas. La  asignación  compuesta simplifica  la escritura  de
+operaciones  en las  que  el lvalue  aparece  tanto  en la  derecha  como en  la
+izquierda; como en el siguiente ejemplo:
+\begin{verbatim}
+        int x;
+
+        x = x + 2;
+\end{verbatim}
+
+La forma abreviada de escribirlo será  poniendo el operador ``+'' (en este caso)
+a continuación el igual y por último la expresión que estamos sumando al lvalue,
+que en este caso es 2.
+\begin{verbatim}
+        int x;
+        
+        x += 2;
+\end{verbatim}
+
+\paragraph{El operador ternario ? (operador condicional)}
+El operador ternario ? sirve para escribir expresiones condicionales. Su formato
+es el siguiente ``\emph{expresion1 ? expresion2 : expresion3}'', expresion1 es
+evaluada primero, si es diferente de cero (verdadero) entonces se evalua 
+expresion2 devolviéndose como resultado de la expresión condicional. Si expresion1
+es igual a cero (falso) se evalua expresion3 y se devuelve como resultado de la
+expresión condicional.\\
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+\ \ \ \textbf{Operador ternario} & \ \ \textbf{Sentencia if}\\
+\hline
+\multicolumn{2}{|c|}{Cálculo de max(a,b)}\\
+\hline
+\verb+z = (a > b)?a:b;+ & \verb+if (a > b)+\\
+\ & \ \ \verb+z=a;+\\
+\ & \verb+else+\\
+\ & \ \ \verb+z=b;+\\
+\hline
+\end{tabular} 
+\end{center}
+
+\paragraph{Los operadores \& y * (unarios)}
+Se estudiarán en la parte de punteros (ver \ref{operadores_punteros}).
+
+\paragraph{El operador sizeof}
+El operador sizeof es un operador unario  que devuelve la longitud, en bytes, de
+la variable o de un tipo especificado.  Es muy útil para hacer un \emph{malloc}
+u otras operaciones.
+\begin{verbatim}
+        double un_double;
+
+        printf ("double: %d \n", sizeof( un_double )); //8
+        printf ("float : %d \n", sizeof( float ));     //4
+        printf ("int   : %d \n", sizeof( int ));       //4
+\end{verbatim}
+
+\paragraph{El operador cast}
+\label{cast}
+El operador cast es un operador unario que hace una conversión explícita (la
+fuerza) del tipo de una expresión.
+Su formato es el siguiente ``\emph{(nombre\_de\_tipo) expresión}'', expresión
+es convertida al tipo nombrado, siempre que esa conversión sea posible.
+\begin{verbatim}
+        int n; // n es un entero
+        
+        sqrt((double) n); // se pasa n a double 
+                          //porque sqrt no acepta un int como parámetro
+\end{verbatim}
+
+\paragraph{El operador coma ``,''}
+Encadena  varias expresiones.  En  este  caso lvalue  y  rvalue son  expresiones
+válidas. El valor resultante de evaluar  una expresión del tipo ``\emph{(lvalue
+, rvalue)}''  es el resultante  de evaluar el rvalue  (esto no significa  que el
+lvalue no se evalúe). Ejemplo:
+\begin{verbatim}
+        x = ( y = 9, z = 0); // x valdrá 0.
+\end{verbatim}
+Aunque su utilización no es precisamente la que se ha detallado en el ejemplo (puede
+dar lugar  a códigos un  tanto oscuros), puede  servirnos para hacer  cosas como
+el siguiente ejemplo, de una manera más o menos simple.
+\begin{verbatim}
+        int i, j;
+        char *cadena = strdup ("hola mundo!");
+
+        printf("%s\n", cadena);
+        for ( i = 0, j = strlen(cadena) - 1; i > j ; i++, j--){
+                cadena[i] = '*';
+                cadena[j] = '*';
+                printf("%s\n", cadena);
+        }  
+\end{verbatim}
+
+\paragraph{Los operadores ``.'' y ``-$>$''} 
+El operador ``.'' se estudiará en la parte de structs (ver
+\ref{operador_structs}), y el operador ``\verb+->+'' en la parte de punteros
+(ver \ref{operador_puntero_structs}).
+
+\paragraph{Los operadores ( y )}
+Simplemente,  alteran  el  orden  de  evaluación  por  defecto  (utilizando  las
+precedencias de los operadores); este  concepto nos es  bastante familiar,  pues lo
+utilizamos también en matemáticas.
+\begin{verbatim}
+x = 5 * 2 + 1;  // x == 11
+y = 5 * (2 + 1); // x == 15
+\end{verbatim}
+
+\paragraph{Los operadores} \verb+[+ y \verb+]+
+Se estudiarán en la parte de arrays (ver \ref{operador_arrays}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Precedencia de operadores}
+Una  expresión está  compuesta por operadores,  variables  y constantes.  Para
+simplificar, podemos pensar  que la forma en  la que C evalúa  esta expresión es
+dividiendo el  \textit{todo} en subexpresiones.  Las reglas que definen  que subexpresión
+evaluar  primero, se  denominan reglas  de precedencia.  Aunque siempre  podemos
+alterar dichas  reglas mediante  la utilización de  paréntesis. En  la siguiente
+tabla detallamos la precedencia entre los operadores de C.
+
+\begin{table} [!h]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+Mayor precedencia & \\
+\hline
+                  & ( ) [ ] -$>$ . \\
+                  & ! $\tilde{\ }$ ++ \-\- \- * \& sizeof (operadores unarios)\\
+                  & * / \% \\
+                  & + -    \\
+                  & $<$$<$ $>$$>$  \\
+                  & $<$ $<=$ $>$ $>=$ \\
+                  & == !=     \\
+                  & \&        \\
+                  & $\wedge$  \\
+                  & $|$         \\
+                  & \&\&      \\
+                  & $|$$|$        \\
+                  & ?:        \\
+                  & = += -= *= /= \%= \\
+                  & ,         \\
+\hline
+Menor precedencia & \\
+\hline
+\end{tabular}
+\caption{Precedencia de operadores}
+\end{center}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage

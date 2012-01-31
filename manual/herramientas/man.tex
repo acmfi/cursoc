@@ -1,0 +1,62 @@
+\section{Manuales: \texttt{man}}
+\label{man}
+
+\verb+man+\footnote{El nombre del comando viene de \texttt{manual}} es un mandato de Unix/Linux que nos informa sobre el funcionamiento de
+otros mandatos.
+El funcionamiento de man no sólo se limita a informarnos sobre el uso
+de mandatos, nos informa también de funciones de libreria y llamadas a
+funciones del sistema. Los archivos de manual de \verb+man+ se encuentran organizados en 9 secciones, de
+las cuales, ahora sólo estamos interesados en las 3 primeras:\\
+
+\begin{tabular}{c|l}
+\textbf{Sección} & \textbf{Descripción} \\
+\hline
+      1 &  Programas ejecutables y comandos de la shell \\
+          \hline
+       2 &  Llamadas al sistema\\
+           \hline
+       3  & Llamadas a funciones de biblioteca \\
+           \hline
+\end{tabular}
+\vspace{0.4cm}
+%\begin{flushleft}
+%Existen 6 secciones más pero no nos interesan para la programación en C.
+%\end{flushleft}
+
+Antes de comenzar a utilizar  \verb+man+ es recomendable que nos informemos más
+sobre su utilización (\verb+man man+).
+Aqui encontraremos algunas opciones muy útiles:\\
+
+\begin{tabular}{c|l}
+\textbf{Opción} & \textbf{Descripción} \\
+\hline
+     -a &  Muestra de forma consecutiva las secciones en que existe manual del comando \\
+     \hline
+     -k &  Muestra las paginas de manual y secciones en que se hace referencia a lo buscado \\
+     \hline
+\end{tabular}
+\vspace{0.4cm}
+
+En el momento de buscar información 
+debemos tener en cuenta que algunas funciones y
+mandatos se encuentran en varias secciones 
+y, por lo tanto, deberemos indicárselo al man antes de su ejecución. Para
+especificar la sección sobre la que queremos consultar, lo haremos de la
+siguiente forma: 
+\begin{verbatim}
+        man [nº seccion] [mandato]
+\end{verbatim}
+
+
+Como ejemplo de la utilización de \verb+man+, consultemos el uso de printf como llamada a función de biblioteca, mediante la siguiente linea:
+\begin{verbatim}
+        man 3 printf
+\end{verbatim}
+
+Ahora veamos su uso como comando de la Shell:
+\begin{verbatim}
+        man 1 printf
+\end{verbatim}
+
+
+

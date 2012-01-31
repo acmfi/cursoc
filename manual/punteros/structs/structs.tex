@@ -1,0 +1,45 @@
+%% SECCIÓN: ESTRUCTURAS Y PUNTEROS
+\section{Estructuras y punteros}
+
+\subsection{El operador ``\texttt{->}''}
+\label{operador_puntero_structs}
+
+En programas un poco más elaborados, usaremos a menudo los punteros
+para apuntar a estructuras (\texttt{struct}). Nada nos impide
+referirnos a los campos de la estructura a la que apunta el puntero de
+la forma que hemos visto hasta ahora, es decir, llamando al campo que
+deseemos del contenido del puntero dado. Con este ejemplo entenderemos
+mejor a qué nos referimos:
+
+\begin{verbatim}
+struct coordenada {
+   int x, y;
+} coord;
+struct coordenada *p_coord;
+p_coord = &coord;
+(*p_coord).x = 4;
+(*p_coord).y = 3;
+\end{verbatim}
+
+\begin{flushleft}
+Aun así esto puede resultar algo engorroso, por eso C nos da la
+posibilidad de usar el operador \texttt{->} que nos facilita las
+cosas:
+\end{flushleft}
+
+\begin{verbatim}
+struct coordenada {
+   int x, y;
+} coord;
+struct coordenada *p_coord;
+p_coord = &coord;
+p_coord->x = 4;
+p_coord->y = 3;
+\end{verbatim}
+
+Los dos códigos anteriores ejecutan lo mismo pero en el segundo
+utilizamos el operador \texttt{->}, que nos hace el código más
+legible. 
+
+\nota{Es un error frecuente utilizar el operador punto sobre un
+puntero a estructura.}  

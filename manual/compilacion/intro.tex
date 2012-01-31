@@ -1,0 +1,30 @@
+%
+% SECCIÓN: INTRODUCCIÓN
+%
+\section{Introducción}
+
+
+En este capítulo vamos a ver cómo es el modelo de compilación en C, es decir, por qué 
+fases pasa nuestro código desde que lo editamos hasta que obtenemos un fichero ejecutable.
+En principio uno podría pensar que conocer lo que ocurre ``por debajo'' no es necesario
+a  la hora de programar C, y de hecho no estaría muy equivocado. Sin embargo hay ciertos
+procesos que ocurren cuando compilamos nuestro código C que como programadores debemos
+conocer.
+
+\begin{flushleft}
+El proceso de compilación de código C consta de tres fases principales:
+\end{flushleft}
+
+\begin{enumerate}
+	\item{\textbf{Preprocesado}}
+	\item{\textbf{Compilado}}
+	\item{\textbf{Enlazado}}
+\end{enumerate}
+
+Primera sorpresa: La compilación es solo una fase del proceso de compilación. Esta aparente
+contradicción se explica fácilmente: cuando hablamos del proceso de compilación nos estamos
+refiriendo al proceso mediante el cual transformamos nuestro código fuente en un fichero
+ejecutable. Sin embargo cuando nos referimos a la fase de compilación nos estamos refiriendo
+a la parte del proceso que se encarga de traducir código fuente en instrucciones en formato
+binario.
+

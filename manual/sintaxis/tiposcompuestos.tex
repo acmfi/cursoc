@@ -1,0 +1,295 @@
+% Seccion Tipos de datos compuestos
+\section{Tipos de datos compuestos}
+\label{sect:compuestos}
+En esta subsección vamos a ver como crear y utilizar tipos compuestos. Un tipo
+compuesto no es más que un tipo de datos que es capaz de almacenar una información.
+
+
+\subsection{\textit{Arrays}}
+Los \textit{arrays}\footnote{En español la palabra \textit{array} no tiene
+una traducción clara. Algunos autores utilizan \textit{agrupación}, aunque
+en este manual utilizaremos simplemente \textit{array}} quizás sean la forma más simple de  
+tipos de datos compuestos. 
+
+\definicion{Array}{Un array es una colección \textbf{ordenada} de elementos de un mismo
+tipo de datos, agrupados de forma consecutiva en memoria. Cada elemento del \textit{array}
+tiene asociado un \textbf{índice}, que no es más que un número natural que lo  identifica
+inequívocamente y permite al programador acceder a él.}
+
+\begin{figure}[H]
+        \begin{center}
+        \includegraphics[width=6cm]{im/sintaxis/array.eps}
+        \label{fig:array}
+        \caption{Un array de números enteros}
+        \end{center}
+\end{figure}
+
+La figura \ref{fig:array} muestra gráficamente un array de números enteros. Óbservese que el 
+índice del primer elemento del \textit{array} es el \textbf{número cero}.
+
+\consejo{Piensa en los índices como desplazamientos desde el inicio del \textit{array}. Así pues
+el primer elemento tendrá un índice (desplazamiento) \textbf{cero}, el segundo un
+índice (desplazamiento) \textbf{uno}, etc.}
+
+\subsubsection{Definición y declaración de arrays en C}
+
+\begin{flushleft}
+La sintaxis para declarar un array es  simple: \verb+tipo nombre[tamaño];+ siendo:
+\end{flushleft}
+\begin{itemize}
+        \item{\verb+tipo+: El tipo de los elementos que compondrán el \textit{array}}
+        \item{\verb+nombre+: El nombre de nuestro \textit{array}}
+        \item{\verb+tamaño+: Un número entero mayor que cero que indica el tamaño del array}
+\end{itemize}
+
+\begin{flushleft}
+Veamos algunos ejemplos:
+\end{flushleft}
+
+\begin{verbatim}
+int  array1[100]; /* Declara un array de 100 elementos enteros */
+char array2[15];  /* Declara un array de 15 caracteres */
+\end{verbatim}
+
+\subsubsection{Acceso a elementos de un \textit{array}}
+\label{operador_arrays}
+
+Los \textit{arrays} no nos servirían de nada si no pudiéramos manipular
+la información que contienen. Para ello se utiliza el operador de acceso a \textit{arrays}
+\verb+[]+. Este operador accede al elemento del array indicado entre los dos corchetes, como
+se puede observar en los siguientes ejemplos:
+
+\begin{verbatim}
+/* Declaramos un array de 10 elementos */
+int array[10]; 
+int tmp;
+
+/* Asignamos al tercer elemento (índice 2) el valor 23 */
+array[2] = 23;
+
+/* Guardamos en tmp el valor del tercer elemento */
+tmp = array[2];
+
+/* El quinto elemento (índice 4) tiene el mismo valor */
+array[4] = array[2];
+\end{verbatim}
+
+\begin{flushleft}
+Como hemos visto, se puede utilizar el operador \verb+[]+ tanto para acceder a elementos
+de un array como para asignarles algún valor. 
+\end{flushleft}
+
+
+Llegados a este punto puedes estar preguntándote: ¿qué valor tienen los elementos de
+un array recien declarado? La respuesta es tan simple como decepcionante: \textbf{no lo
+sabes}. Los elementos de un \textit{array} recién declarado tomarán valores no determinados.
+
+
+\consejo{Siempre que declares un array asegúrate que inicializas los elementos a un valor
+conocido antes de operar con ellos.}
+
+
+
+\subsection{Estructuras}
+
+\definicion{Estructura}{Una estructura (\textit{struct}) es un tipo de datos compuesto que agrupa un
+conjunto de tipos de datos (no necesariamente iguales) en un único tipo.}
+
+La anterior definición, que en un principio se nos puede antojar oscura, oculta un
+concepto realmente simple, que vamos a explicar mediante el siguiente ejemplo: supongamos
+que estamos escribiendo un \textit{software} de gestión de miembros de asociaciones universitarias.
+Obviamente necesitaremos almacenar y manipular datos sobre personas, tales como
+nombre, DNI, edad, etc. Podríamos aproximarnos al problema declarando estas variables
+por separado en nuestro programa:
+\begin{verbatim}
+/* Edad de la persona */
+int edad;
+
+/* DNI */
+char DNI[20];
+
+/* Nombre de la persona */
+char nombre[50];
+\end{verbatim}
+
+Sin embargo hay algo que no ``encaja'' demasiado bien dentro de esta aproximación. Esta claro
+que, aunque tengamos tres variables independientes, las tres se refieren a distintos
+aspectos de información acerca de una misma persona, lo cual no queda reflejado en el código del
+programa, pudiendo llevar a errores o malentendidos\footnote{Recordemos que la mayoría de
+los programas que escribamos serán leidos por al menos otra persona, la cual no tiene por qué
+estar familiarizada con nuestro estilo de programación}. Adoptamos los siguientes cambios:
+
+\begin{verbatim}
+/* Edad de la persona */
+int persona_edad;
+
+/* DNI */
+char persona_DNI[20];
+
+/* Nombre de la persona */
+char persona_nombre[50];
+\end{verbatim}
+
+Claro está, los cambios realizados no influyen para nada en el funcionamiento del programa. Sin
+embargo mejoran la legibilidad del código, algo \textbf{muy importante}, sobre todo cuando
+estamos tratando con programas de más de unas pocas líneas de código. Aún así no estamos
+totalmente convencidos del resultado; esta claro que ahora queda patente que las tres
+variables se refieren a distintos aspectos de una misma unidad de información. Sin embargo
+todavía sigue siendo ``engorroso'' manipular los datos de una persona, sobre todo cuando
+hay que pasar dichos datos a una función, ya que tendremos que pasar tres nombres de variable
+a la función, aún tratándose de una misma persona. Nos gustaría  ``agrupar'' estos datos, de 
+igual forma que agrupamos todos los apuntes de una asignatura en una misma carpeta. Las estructuras
+nos permiten hacer precisamente esto.
+
+\subsubsection{Definición de una estructura en un programa C}
+
+\begin{flushleft}
+La sintaxis para definir una estructura es la siguiente:
+\end{flushleft}
+
+\begin{verbatim}
+struct nombreEstructura {
+    declaración de variable1;
+    declaración de variable2;
+    .
+    .
+    declaración de variableN;
+};
+\end{verbatim}
+
+\begin{flushleft}
+Dicho de forma informal lo que estamos haciendo es englobar un conjunto de variables dentro
+de un nuevo entorno.
+\end{flushleft}
+\subsubsection{Declaración de variables de esa estructura}
+
+\begin{flushleft}
+Una vez que tengamos definida la estructura podremos declarar variables de ese tipo, de la siguiente
+forma:
+\end{flushleft}
+
+\begin{verbatim}
+struct nombreEstructura nombreVariable;
+\end{verbatim}
+
+A partir de este momento la variable \verb+nombreVariable+ contendrá información acerca de cada
+uno de los campos definidos en la estructura. 
+
+
+\subsubsection{Accediendo a los campos de una estructura}
+\label{operador_structs}
+
+Supongamos que tenemos declarada la variable \verb+var_struct+, perteneciente al tipo de la
+estructura \verb+struct1+, la cual tiene declarada los campos \verb+campo1+ (entero)
+y \verb+campo2+ (real). Para acceder a estos campos utilizamos el operador \verb+.+ (punto),
+de la siguiente forma:
+\begin{verbatim}
+var_struct.campo1 = 10;
+var_struct.campo2 = var_struct.campo1 * 3.1415;
+\end{verbatim}
+
+Al igual que en el caso de los \textit{arrays}, este operador se puede utilizar tanto para
+acceder a la información de los campos como para modificarlos.
+
+
+% subsubseccion Ejemplo
+\subsubsection{Ejemplo}
+
+Retomando el ejemplo de nuestro gestor de miembros de asociaciones universitarias, podemos
+reescribir el código de la siguiente forma:
+\begin{verbatim}
+struct Persona {
+        /* Edad de la persona */
+        int edad;
+
+        /* DNI */
+        char DNI[20];
+
+        /* Nombre */
+        char nombre[20];
+};
+
+
+/* Declaramos dos variables del tipo Persona */
+struct Persona miembro_acm1;
+struct Persona miembro_acm2;
+
+/* Asignamos algunos valores */
+miembro_acm1.edad = 21;
+miembro_acm2.edad = 23;
+
+/* Los demás campos quedán indefinidos!! */
+\end{verbatim}
+
+\begin{flushleft}
+Gráficamente lo que hemos hecho es lo siguiente:
+\end{flushleft}
+
+\begin{center}
+        \includegraphics[width=15cm]{im/estructuras.eps}
+\end{center}
+
+
+% subsubseccion Uniones
+\subsection{Uniones}
+
+Las uniones (\textit{unions}) tienen un cometido parecido a las estructuras, esto es, agrupar
+en una sola variable varios valores. Sin embargo, al contrario que las estructuras, las uniones
+sólo pueden guardar un valor a la vez. Esto significa que si asignamos valor a uno de los
+componentes de una variable unión, los demás componentes dejarán de tener un valor asignado. 
+
+
+\definicion{Unión}{Una unión es un tipo de datos compuesto que puede almacenar
+valores de diferentes tipos, aunque no a la vez.}
+
+\consejo{Puedes pensar en las uniones como tipos ``mutantes'', es decir, como
+variables que pueden almacenar valores de distintos tipos. Al igual que pasa con
+las variables ordinarias el hecho de asignar a una unión un valor destruye automáticamente
+los valores anteriores (sean del tipo que sean). Al fin y al cabo, lo
+que el compilador hace es reservar espacio para una variable de tamaño
+el elemento de mayor tamaño de la union.}
+
+\subsubsection{Definicion de una unión en un programa C}
+\begin{flushleft}
+La definición de una unión es muy similar a la de una estructura:
+\end{flushleft}
+\begin{verbatim}
+union nombreUnion {
+    declaración de variable1;
+    declaración de variable2;
+    .
+    .
+    declaración de variableN;
+};
+\end{verbatim}
+
+\subsubsection{Declaración de variables tipo union}
+\begin{verbatim}
+union nombreUnion variableUnion1;
+\end{verbatim}
+
+\begin{flushleft}
+Al igual que en el caso de las estructuras, para acceder a un componente de una unión se
+utiliza el operador \verb+.+ (punto).
+\end{flushleft}
+
+
+\subsubsection{Ejemplo}
+\begin{verbatim}
+union Salario {
+    int enPesetas;
+    float enEuros;
+};
+
+union Salario SalarioJuan;
+
+/* En principio Juan cobra en pesetas */
+SalarioJuan.enPesetas = 250000; /* ahora SalarioJuan.enEuros no tiene valor */
+.
+.
+/* Pero ahora vamos a reconvertir el salario de Juan a euros */
+SalarioJuan.enEuros = SalarioJuan.enPesetas / 166.386;
+
+/* A partir de este momento SalarioJuan.enPesetas no tiene valor válido */
+\end{verbatim}
+

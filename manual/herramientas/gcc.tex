@@ -1,0 +1,188 @@
+\section{Compilador: \texttt{gcc}}
+GCC\footnote{Originalmente acrónimo de \textit{GNU C Compiler}. Actualmente se
+refiere a \textit{GNU Compiler Collection}, debido a la posibilidad de compilar
+otros lenguajes como Ada, Java o Fortran} es un compilador rápido, muy flexible, y
+riguroso con el estándar de C ANSI. Como ejemplo de sus múltiples
+virtudes, diremos que gcc puede funcionar como \textit{compilador
+cruzado}\footnote{un compilador cruzado corre bajo una arquitectura,
+por ejemplo Intel x86, pero el código binario que genera está diseñado
+para correr en otra arquitectura distinta, por ejemplo SPARC} para un
+gran número de arquitecturas distintas. gcc no proporciona un entorno
+IDEs, es solo una
+herramienta más a utilizar en el proceso. gcc se encarga de realizar (o encargar el 
+trabajo a otras utilidades, como veremos) el preprocesado 
+(ver \ref{preprocesador}) del código, la compilación,
+y el enlazado. Dicho de otra manera, nosotros proporcionamos a gcc
+nuestro código fuente en C, y él nos devuelve un archivo binario
+compilado para nuestra arquitectura.\\
+
+Como curiosidad, mencionar que en realidad gcc no genera código
+binario alguno, sino código ensamblado. La fase de
+ensamblado a código binario la realiza el ensamblador de GNU
+(\textit{gas}), y el enlazado de los objetos resultantes, el enlazador
+de GNU (\textit{ld}). Este proceso es transparente para el usuario, ya
+que a no ser que se lo especifiquemos, gcc realiza el paso desde
+código en C a un binario ejecutable automáticamente.
+
+\subsection{Manejo de gcc}
+
+Casi siempre, gcc es invocado desde la herramienta \textit{make}, cuyo
+funcionamiento se explica más adelante. Pero obviamente, debemos saber manejar
+mínimamente gcc para compilar nuestros programas. La sintaxis de gcc es la siguiente:
+
+\begin{verbatim}
+Usage: gcc [options] file...
+\end{verbatim}
+
+Vamos pues a compilar nuestro primer programa con gcc, que no podría
+ser de otra manera, será un \textit{hola mundo}\footnote{el primer
+ejemplo de cualquier tutorial de un lenguaje}:
+
+\ejemplo{herramientas/holamundo.c}
+
+y lo compilamos ejecutando:
+
+\begin{verbatim}
+mustang@amarok:~/seminarioc/documentacion/herramientas > gcc holamundo.c 
+mustang@amarok:~/seminarioc/documentacion/herramientas > ls
+total 68
+drwxr-xr-x    4 mustang  mustang      4096 2003-10-30 14:07 .
+drwxr-xr-x   16 mustang  mustang      4096 2003-10-30 13:43 ..
+-rwxr-xr-x    1 mustang  mustang      5159 2003-10-30 14:00 a.out
+-rw-r--r--    1 mustang  mustang        77 2003-10-30 14:00 holamundo.c
+mustang@amarok:~/seminarioc/documentacion/herramientas > 
+\end{verbatim}
+
+Nos muestra un archivo \verb+a.out+, que es el archivo ejecutable
+resultado de la compilación. Lo ejecutamos:
+
+\begin{verbatim}
+mustang@amarok:~/seminarioc/documentacion/herramientas > ./a.out 
+Hola mundo
+mustang@amarok:~/seminarioc/documentacion/herramientas >
+\end{verbatim}
+
+Veamos como se comporta si introducimos un error en el fichero:
+
+\ejemplo{herramientas/holamundo_error.c}
+
+\begin{verbatim}
+mustang@amarok:~/seminarioc/documentacion/herramientas > gcc holamundo_error.c
+holamundo_error.c: In function `main':
+holamundo_error.c:7: `a' undeclared (first use in this function)
+holamundo_error.c:7: (Each undeclared identifier is reported only once
+holamundo_error.c:7: for each function it appears in.)
+holamundo_error.c:7: parse error before `return'
+mustang@amarok:~/seminarioc/documentacion/herramientas >
+\end{verbatim}
+
+Como vemos gcc  nos proporciona el fichero y la línea en la que ha
+detectado el error. El formato de la salida de error es reconocido por
+la mayoría de los editores, que nos permiten visitar esa posición con
+atajos de teclado\footnote{en el editor Emacs, se puede hacer
+  compilando mediante M-x compile, y usando el atajo C-x \`\
+  SPC}. Obviamente, cuando gcc genera algún error, no se crea archivo
+ejecutable como resultado.
+
+\subsection{Warnings y errores}
+
+\definicion{Error}{fallo al analizar el código C que impide la
+generación de un ejecutable final.}
+
+\definicion{\textit{Warning}}{advertencia del compilador al analizar
+  el código C que no impide la generación de un ejecutable
+  final.} 
+
+Vamos a provocar que gcc se queje con un \textit{warning}. Para ello,
+utilizamos el siguiente código:
+
+\ejemplo{herramientas/holamundo_warning.c}
+
+Y lo compilamos con:
+
+\begin{verbatim}
+mustang@amarok:~/documentacion/herramientas > gcc -Wall holamundo_warning.c
+holamundo_warning.c: In function `main':
+holamundo_warning.c:6: warning: control reaches end of non-void function
+mustang@amarok:~/documentacion/herramientas >
+\end{verbatim}
+
+\begin{flushleft}
+A pesar del \textit{warning}, gcc ha compilado un fichero ejecutable. Más
+adelante veremos el significado de la opción \verb+-Wall+.
+\end{flushleft}
+
+
+
+\subsection{Opciones más comunes}
+
+\label{opciones_gcc}
+
+A continuación mostramos algunas de las opciones más habituales al
+usar gcc:
+
+\begin{itemize}
+
+\item{\texttt{--help}}
+
+Indica a gcc que muestre su salida de ayuda (muy reducida).
+
+\item{\texttt{-o <file>}}
+
+El archivo ejecutable generado por gcc es por defecto \verb+a.out+. Mediante
+este modificador, le especificamos el nombre del ejecutable. 
+
+\item{\texttt{-Wall}}
+
+No omite la detección de ningún warning. Por defecto, gcc omite una
+colección de warnings ``poco importantes''.
+
+\item{\texttt{-g}}
+
+Incluye en el binario información necesaria para utilizar un depurador
+posteriormente. 
+
+\item{\texttt{-O <nivel>}}
+
+Indica a gcc que utilice optimizaciones en el código. Los niveles
+posibles van desde 0 (no optimizar) hasta 3 (optimización
+máxima). Utilizar el optimizador aumenta el tiempo de compilación,
+pero suele generar ejecutables más rápidos.
+
+\consejo{No utilices optimización cuando generes un ejecutable con información
+de depuración (opcion \texttt{-g}). Las optimizaciones introducidas pueden
+confundir al depurador.}
+
+\item{\texttt{-E}}
+
+Sólo realiza la fase del preprocesador, no compila, ni ensambla, ni
+enlaza.
+
+\item{\texttt{-S}}
+
+Preprocesa y compila, pero no ensambla ni enlaza.
+
+\item{\texttt{-c}}
+
+Preprocesa, compila y ensambla, pero no enlaza.
+
+\item{\texttt{-I <dir>}}
+
+Especifica un directorio adicional donde gcc debe buscar los archivos
+de cabecera indicados en el código fuente (ver \ref{include}).
+
+\item{\texttt{-L <dir>}}
+
+Especifica un directorio adicional donde gcc debe buscar las librerías
+necesarias en el proceso de enlazado (ver \ref{enlazado}).
+
+\item{\texttt{-l<library>}}
+
+Especifica el nombre de una librería adicional que deberá ser
+utilizada en el proceso de enlazado (ver \ref{enlazado}).
+
+\end{itemize}
+
+La colección completa de modificadores a utilizar con gcc se encuentra
+en su página de manual, \verb+man gcc+, cuyo manejo se explica un poco
+más adelante (ver \ref{man}).

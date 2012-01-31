@@ -1,0 +1,170 @@
+\documentclass[a4paper,twoside]{report}
+
+% PAQUETES
+\usepackage{latexsym}
+\usepackage[activeacute,spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{shadow}
+\usepackage[left=1.7cm, top=2.2cm, right=1.5cm, bottom=2.4cm]{geometry}
+\usepackage{boxedminipage}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{times}
+
+% MACROS
+\input{macros.tex}
+
+\begin{document}
+
+
+
+
+
+\begin{center}
+        \begin{Huge}
+                \textsc{introducción al lenguaje C}
+        \end{Huge}
+        \vspace{7cm}
+        
+
+        \begin{tabular}{lr}
+                \begin{minipage}{8cm}
+                        \begin{center}
+                                \includegraphics{im/acm-big-logo.eps}
+                        \end{center}
+                \end{minipage}&
+                \begin{minipage}{8cm}
+                        \begin{large}
+                                \textbf{ACM Capítulo de Estudiantes}
+                                \vspace{0.5cm}\\
+                                Facultad de Informática, UPM
+                                \vspace{0.5cm}\\
+                                Marzo 2007
+
+                        \end{large}
+                        
+                \end{minipage}\\
+        \end{tabular}
+\end{center}
+
+\pagenumbering{gobble}
+\newpage
+
+\vspace*{18cm}
+\section*{Introducción al lenguaje C}
+
+{
+\flushleft
+\copyright 2003-2007 ACM Capítulo de Estudiantes - Facultad de Informática UPM\\
+ACM Capítulo de Estudiantes \\
+Facultad de Informática - Universidad Politécnica de Madrid \\
+Campus de Montegancedo s/n \\
+28660 Boadilla del Monte \\
+MADRID (SPAIN)\\
+}
+Esta obra puede ser distribuida únicamente bajo los términos y condiciones
+expuestos en \textbf{Creative Commons\\ \mbox{Reconocimiento-CompartirIgual}} 2.0 o
+superior (puede consultarla en
+\textit{http://creativecommons.org/licenses/by-sa/2.0/es/}).
+
+\newpage
+
+\pagenumbering{roman}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+\pagestyle{headings}
+\pagenumbering{arabic}
+
+%\setcounter{chapter}{-1}
+
+%
+% PREFACIO
+%
+%\input{prefacio.tex}
+
+%%
+%% INTRODUCCIÓN
+%%
+\input{introduccion.tex}
+\newpage
+
+%%
+%% HERRAMIENTAS
+%%
+\input{herramientas/herramientas.tex}
+\newpage
+
+%%
+%% SINTAXIS 
+%%
+
+\newpage
+\ \
+\newpage
+\input{sintaxis/sintaxis.tex}
+\newpage
+
+
+%%
+%% MODELO DE COMPILACION
+%%
+
+\newpage
+\ \
+\newpage
+
+\input{compilacion/compilacion.tex}
+\newpage
+
+
+%%
+%% PUNTEROS Y MEMORIA DINÁMICA
+%%
+
+\newpage
+\ \
+\newpage
+
+
+\input{punteros/punteros.tex}
+\newpage
+
+
+%%
+%% LIBRERÍA ESTANDAR
+%%
+
+\input{libstd/libstd.tex}
+\newpage
+
+%%
+%% TEMAS AVANZADOS
+%%
+
+\newpage
+\ \
+\newpage
+
+
+\input{avanzados/avanzados.tex}
+\newpage
+
+%%
+%% HOJA DE REFERENCIA
+%%
+
+\newpage
+\ \
+\newpage
+
+
+\input{referencia/referencia.tex}
+\end{document}

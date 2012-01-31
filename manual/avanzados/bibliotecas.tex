@@ -1,0 +1,95 @@
+\section{Gestión de bibliotecas de funciones}
+
+\subsection{¿Qué es una biblioteca?}
+
+\definicion{Biblioteca}{Consiste en un archivo binario que almacena el código
+compilado de funciones. }
+
+El programa básico en Unix/Linux para gestionar bibliotecas es \textit{ar} (también
+\textit{ranlib}) y sus funciones básicas son crear, modificar y
+extraer funciones. Las bibliotecas más importantes que se utilizan en
+el desarrollo de aplicaciones C son \textit{libc.a, libm.a, etc...}
+
+\subsection{¿Para qué necesito una biblioteca?}
+
+Las bibliotecas permiten almacenar en un mismo archivo el código de muchas funciones. Las ventajas
+de esta alternativa saltan a la vista:
+\begin{itemize}
+	\item{Cuando queramos utilizar una función de la biblioteca no tendremos que buscar el código
+	y compilarlo, sino simplemente decirle al compilador dónde puede encontrar la biblioteca}
+
+	\item{Ayudan a la reutilización de código, permitiendo que varios programas compartan
+	porciones de código.}
+
+	\item{Promueven una programación más modular.}
+\end{itemize}
+
+
+
+\subsection{Bibliotecas en Unix/Linux: \textit{ar}}
+La sintaxis de \textit{ar} es la siguiente:
+
+\begin{verbatim}
+ar [-] [miembro] biblioteca [ficheros]
+\end{verbatim}
+
+Comentaremos las opciones mas importantes del ar:
+
+\begin{itemize}
+\item\texttt{d}: Borrar miembros de la biblioteca.
+\item\texttt{m}: Mover un miembro de la biblioteca.
+\item\texttt{p}: Imprimir un miembro de la biblioteca en el fichero estándar de salida.
+\item\texttt{q}: Añadido rápido.
+\item\texttt{r}: Reemplazar ficheros en la biblioteca.
+\item\texttt{t}: Mostrar una tabla con el contenido de la biblioteca.
+\item\texttt{x}: Extraer miembros de la biblioteca.
+\end{itemize}
+
+\subsection{Ejemplo}
+
+Imaginemos que tenemos una aplicación para gestionar matrices, y
+que tenemos una biblioteca en donde están incluidos ya varios ficheros
+objeto llamada \textit{matriz.a}. Si ahora queremos darle mayor
+funcionalidad a nuestra biblioteca de matrices y queremos añadir
+una funcion que por ejemplo haga la inversa de una matriz,
+implementamos el fichero \textit{inver.c}, lo compilamos con:
+
+\begin{verbatim}
+$ gcc -c inver.c
+\end{verbatim}
+
+Esto nos crea el código objeto, y ahora para añadir esto a la biblioteca hacemos:
+
+\begin{verbatim}
+$ ar r matriz.a inver.o
+\end{verbatim}
+
+Situándonos en el path donde se encuentra la biblioteca. Si el fichero
+\textit{inver.o} se encuentra en otro directorio basta con hacer:
+
+\begin{verbatim}
+$ ar r matriz.a /home/micuenta/inver.o (por ejemplo)
+\end{verbatim}
+
+Para visualizar el contenido de una biblioteca:
+
+\begin{verbatim}
+$ ar t matriz.a
+inver.o
+multi.o
+sum.o
+\end{verbatim}
+
+Si queremos más información:
+
+\begin{verbatim}
+$ ar tv matriz.a
+rw-r--r-- 402/ 6  875 Oct 26 14:43 2003 inver.o
+etc...
+\end{verbatim}
+
+Para extraer un modulo de la biblioteca:
+
+\begin{verbatim}
+$ ar xv matriz.a inver.o
+\end{verbatim}

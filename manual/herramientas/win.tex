@@ -1,0 +1,62 @@
+\section{Herramientas de desarrollo C sobre Windows}
+
+Cuando utilizamos Windows no tenemos tan claro que compilador utilizar
+ya que en Windows disponemos de herramientas portadas de Linux
+(gcc.exe) o las herramientas que Microsoft nos proporciona para
+desarrollar programas (Visual Studio) que podemos obtener de
+Biblioteca con una licencia de estudiante de forma gratuita.
+
+\subsection{GCC en Windows}
+
+La compilación de un programa utilizando el GCC se realiza de la misma
+forma a la vista en Linux, pero debemos tener en cuenta que no todo
+programa que compile en Linux compila en Windows debido a las
+diferencias existentes en las llamadas al sistema. Esto es debido a  que Windows
+no cumple completamente con el estandar POSIX (ver \ref{posix}) de llamadas al sistema. 
+Estas
+herramientas para Windows las podemos obtener por medio de diferentes
+programas, ya sea bajandonos el conjunto de herramientas UNIX para
+Windows \textit{MinGW}, o descargándonos desde la facultad el compilador
+de Ada95 \textit{(GNAT)}, el cual viene con un el GCC, ya que la
+compilación llevada a cabo por \textit{GNATMAKE} es una traducción del
+lenguaje Ada a C y una posterior compilación en C.  Estas herramientas
+estan disponibles desde las siguientes direcciones:
+
+\begin{itemize}
+\item \url{ftp://lml.ls.fi.upm.es/pub/lenguajes/ada/gnat/3.13p/winnt/}
+\item \url{http://www.mingw.org/download.shtml}
+\end{itemize}
+
+%Si nos decantamos por la utilización del GCC proporcionado por \textit{GNATMAKE} deberemos
+%tener en cuenta que los programas que queramos compilar deben ser copiados a la ruta ...
+Y recordad, tanto si elegimos utilizar el paquete de utilidades Linux
+que encontramos en \textit{MinGW}, como si elegimos el \textit{GNAT},
+deberemos incluir la ruta donde instalemos estos archivos en nuestro
+\verb+PATH+ para que funcione la compilación. Otra posibilidad es
+crear todos los archivos dentro de la carpeta donde se encuentre
+instalado \textit{MinGW} o el archivo \verb+gcc.exe+ ya que en caso
+contrario, Windows no podra localizar el compilador \verb+gcc+ y nos
+mostrara ese maravilloso mensaje de error:
+
+\begin{verbatim}
+"gcc" no se reconoce como un comando interno o externo, programa o
+archivo por lotes ejecutable.
+\end{verbatim}
+
+% \subsection{Visual Studio}
+% 
+% Si decidimos utilizar como herramienta de compilación este programa,
+% nos encontraremos con un interfaz de desarrollo orientado a proyectos
+% con C++ pero podremos utilizarlo tambien para compilar nuestros
+% programas en C.
+% 
+% También mencionaremos aquí la depuración disponible en Visual Studio,
+% el cual nos permitira visualizar los valores de las direfentes
+% variables, desde su valor en memoria y la ejecución paso a paso de
+% cada una de las lineas de código.
+% 
+% \subsection{Depuracion: \texttt{gdb}}
+% 
+% En Windows, al igual que pasaba con el gcc, disponemos de un GDB
+% portado desde Linux, el cual funciona de identica manera a la
+% explicada en la sección \ref{gdb}.

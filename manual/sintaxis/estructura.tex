@@ -1,0 +1,177 @@
+% seccion Un programa simple en C: Estructura general
+\section{Estructura de un programa simple en C}
+
+En esta sección vamos a ver, de forma muy general, los elementos más significativos de la
+sintaxis de C. No explicaremos en profundidad la función de cada uno de estos elementos, ya que
+cada uno de ellos tiene dedicada una sección más adelante.\\
+
+Todos los programas escritos en C se componen de \textbf{una o más rutinas o funciones}, no teniendo por qué
+estar todas en un mismo fichero (esto es, pueden escribirse programas en C cuyo código
+esté repartido por varios ficheros). Una de estas funciones, \verb+main()+ es de obligatoria declaración
+en todos los programas C, ya que será en esa función donde comience la ejecución de nuestro programa. Es
+decir, todos nuestros programas comenzarán como si ``alguien'' hubiera llamado a la función \verb+main+
+por nosotros. Nuestro código deberá elaborarse y estructurarse teniendo en cuenta este punto de entrada.
+
+
+\begin{flushleft}
+Como decíamos uno de los elementos principales de todo programa C son las funciones. Cada función está compuesta por los siguientes elementos:
+\end{flushleft}
+
+\begin{itemize}
+        \item{\textbf{Una cabecera de función:} la misión de la cabecera es identificar la 
+        función, así como declarar el tipo de datos que devuelve.}
+
+        \item{\textbf{Declaración de argumentos:} la declaración de argumentos informa de los
+        parámetros que recibe la función (en caso de recibir alguno).}
+        
+        \item{\textbf{Una \textit{sentencia compuesta}:} que contiene el código de la función.}
+\end{itemize}
+
+El concepto de sentencia merece una explicación más detallada. Podemos considerar una
+sentencia \textbf{simple} como una instrucción u orden del programa. C extiende esta 
+noción a grupos de sentencias, llamadas sentencias \textbf{compuestas}. Este tipo
+de sentencias sirven para almacenar otras sentencias que se ejecutarán de forma secuencial.\\ 
+
+En cuanto a la sintaxis, las sentencias simples se delimitan por el carácter \verb+;+, mientrás
+que las sentencias compuestas delimitan las sentencias que contienen entre un par de llaves
+(\verb+{+ y \verb+}+).
+
+\begin{flushleft}
+Además de funciones en un programa C podemos encontrar los siguientes elementos:
+\end{flushleft}
+\begin{itemize}
+        \item{\textbf{Comentarios:} los comentarios no son más que pequeñas anotaciones de
+        texto que clarifican alguna parte del código. En C cada comentario debe comenzar
+        por la cadena \verb+/*+ y terminar por \verb+*/+
+        
+                \nota{Puede que veas otro tipo de formato para los comentarios en algún código
+                fuente: 
+                        \begin{center}
+                        \texttt{// Texto del comentario <fin de linea>}
+                        \end{center}
+                        
+                \emph{No} debes utilizar este tipo
+                de comentarios cuando programes en C ya que esta forma de comentar viene del 
+                lenguaje C++. Un compilador de C (y no de C++) \textbf{no} tiene por qué aceptar
+                comentarios de este estilo (aunque muchos lo hacen)}
+        }
+        
+        \item{\textbf{Definiciones de tipos de datos y variables globales:} pasaremos a ver
+        estos elementos más adelante.}
+
+        \item{\textbf{Directivas del preprocesador:} una directiva del preprocesador es una 
+        instrucción que se le da al compilador para que se realice cierta acción antes de
+        realizar la compilación del código. Veremos esto en más profundidad en el capítulo
+        \ref{chapter:comp}}
+
+\end{itemize}
+
+
+\begin{flushleft}
+Veamos algunos ejemplos de programas simples en C:
+\end{flushleft}
+
+
+\ejemplo{sintaxis/simple1.c}
+
+\begin{flushleft}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Nº Línea} &\textbf{Línea} & \textbf{Significado}\\
+\hline
+1&\verb+/* Esto es un comentario */+ & Comentario \\
+\hline
+3&\verb+int main (void)+ & Inicio de la función \verb+main+\\
+\hline
+6&\verb+printf( "Hola mundo!\n" );+ & \verb+printf+ escribe texto por pantalla\\
+\hline
+8&\verb+return 1;+ & Salimos de la función \verb+main+, devolviendo 1\\
+\hline
+\end{tabular}
+
+\end{flushleft}
+
+
+\nota{ Como puedes observar la sintaxis de  C tiene un estilo \textit{muy conciso}, y no precisamente
+agradable de leer para el principiante. }
+
+\begin{flushleft}
+El anterior ejemplo introduce algunos conceptos importantes de la sintaxis de los programas C:
+\end{flushleft}
+
+\begin{itemize}
+        \item{Los comentarios pueden ir en cualquier parte del código. A efectos del compilador todo
+        texto encerrado entre \verb+/*+ y \verb+*/+ no existe. Observarás que no hemos escrito ninguna
+        tilde en el texto del comentario. Suele ser norma no escribir caracteres ``raros'' tales
+        como tildes o cedillas en los comentarios de programas, ya que algunos compiladores
+        pueden tener problemas ante estos caracteres.}
+        
+
+        \item{Como ya hemos comentado, las sentencias compuestas están delimitadas por un par
+        de llaves. En el ejemplo anterior encontramos:
+                \begin{itemize}
+                        \item{Una sentencia compuesta, delimitada por las llaves de las líneas
+                        4 y 9. Esta sentencia compuesta forma el cuerpo de la función \verb+main+.}
+
+                        \item{Dos sentencias simples (líneas 6 y 8), componentes de la anterior sentencia compuesta.
+                        Observa como \textbf{todas} las sentencias simples están delimitadas por el caracter
+                        \verb+;+.}
+                \end{itemize}
+        }
+
+        \item{La función \verb+main+ no recibe ningún parámetro. Para indicar esto se escribe
+        \verb+void+ (vacío en inglés) en la lista de parámetros de su declaración.}
+
+\end{itemize}
+
+
+
+El siguiente ejemplo es un programa más elaborado que calcula el área de un círculo dado un radio. Recuerda
+que estamos echando un vistazo muy general a la sintaxis de los programas C. No te preocupes si no
+entiendes alguna sentencia o construcción del programa.
+
+\ejemplo{sintaxis/simple2.c}
+
+
+\begin{flushleft}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Nº Línea} &\textbf{Línea} & \textbf{Significado}\\
+\hline
+1 & \verb+#include <stdio.h>+ & Directiva del preprocesador \\
+\hline
+3 & \verb+#define PI 3.1415+ & Directiva del preprocesador \\
+\hline
+6-9 & & Declaración y definición de la función \verb+areaCirculo+ \\
+\hline
+12 & \verb+int main (void)+ & Inicio de la función \verb+main+\\
+\hline
+15 & \verb+float radio;+ & Declaración de una variable real (tipo \verb+float+)\\
+\hline
+20 & \verb+scanf( "%f", &radio );+ & Llamada a la función \verb+scanf+, que maneja
+la lectura desde el teclado \\
+\hline
+22 & \verb+if (radio < 0)+ & Inicio de una sentencia condicional \verb+if-else+\\
+\hline
+\end{tabular}
+\end{flushleft}
+
+Como puedes observar este ejemplo es un poco más complicado que el anterior. La estructura
+sintáctica del programa no cambia, solo se añaden nuevos elementos:
+\begin{itemize}
+        \item{\textbf{Funciones:} Se ha añadido la función \verb+areaCirculo+, llamada desde \verb+main+, que calcula
+        el área de un círculo dado su radio. Además esta función recibe un parámetro (\verb+radio+) y
+        devuelve un número real.  Observa como la estructura de declaración de funciones
+        es consistente. 
+        }
+        
+        \item{\textbf{Directivas del procesador:} Toda línea que empiece por el carácter \verb+#+ es
+        una directiva del preprocesador. Como ya hemos dicho explicaremos estas directivas en el
+        capítulo \ref{chapter:comp}.}
+
+        \item{\textbf{Nuevos tipos de sentencias:} Hasta ahora habíamos visto solo sentencias
+        de llamada a función (a la función \verb+printf+ más concretamente) y de devolución
+        de valores desde la función (\verb+return+). Aquí se presentan sentencias de declaración
+        de variables (líneas 15,16) y de ejecución condicional (sentencia \verb+if-else+).}
+
+\end{itemize}
