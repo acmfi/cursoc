@@ -4,7 +4,7 @@ Curso de C
 This documentation of C language was written by PoliTech University of Madrid
 ACM Student Chapter (only available in spanish).
 
-Este manual del lenguaje C ha sido escrito por el Capítulo de Estudiantes de la Universidad Politécnica.
+Este manual del lenguaje C ha sido escrito por el Capítulo de Estudiantes de la Universidad Politécnica de Madrid.
 
 
 Agradecimientos:
@@ -26,7 +26,7 @@ Agradecemos el trabajo y el apoyo de las siguientes personas que hicieron posibl
  + Ivan Sánchez Ortega
  + Jaime Durán Bados
  + Jorge López Trescastro
- + Luis Manuel Cidoncha Gallego
+ + L. C.
  + Miguel Veguillas Palacios
  + P. D.
  + Pedro Arnedo Díaz de Cerio
